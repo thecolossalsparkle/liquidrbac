@@ -1,0 +1,24 @@
+src/
+  ├── components/
+  │   ├── common/
+  │   │   ├── Button.jsx
+  │   │   ├── Card.jsx
+  │   │   ├── SearchInput.jsx
+  │   │   ├── Table.jsx
+  │   │   ├── Navbar.jsx
+  │   │   └── StatCard.jsx
+  │   ├── dashboard/
+  │   │   ├── DashboardStats.jsx
+  │   │   └── RecentActivity.jsx
+  │   ├── calendar/
+  │   │   └── Calendar.jsx
+  │   └── layout/
+  │       └── PageLayout.jsx
+  ├── pages/
+  │   ├── Dashboard.jsx
+  │   ├── Users.jsx
+  │   ├── Invoices.jsx
+  │   ├── Calendar.jsx
+  │   └── Installments.jsx
+  └── styles/
+      └── index.css 
