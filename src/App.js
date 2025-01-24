@@ -6,6 +6,7 @@ import Users from './pages/Users';
 import Invoices from './pages/Invoices';
 import Calendar from './pages/Calendar';
 import Home from './pages/Home';
+import Installments from './pages/Installments';
 import './App.css';
 
 function App() {
@@ -17,7 +18,8 @@ function App() {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/users" element={<Users />} />
           <Route path="/invoices" element={<Invoices />} />
-          <Route path="/calendar" element={<Calendar />} />  
+          <Route path="/calendar" element={<Calendar />} />
+          <Route path="/installments" element={<Installments />} />
         </Routes>
       </PageLayout>
     </Router>

@@ -26,7 +26,7 @@ function Users() {
         <div className="flex flex-col sm:flex-row w-full sm:w-auto gap-3">
           <button 
             onClick={() => setIsThresholdModalOpen(true)}
-            className="flex items-center justify-center gap-2 px-4 py-2.5 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors duration-200 text-gray-700 shadow-sm w-full sm:w-auto"
+            className="flex items-center justify-center gap-2 px-4 py-2.5 bg-blue-500 hover:bg-blue-600 rounded-lg transition-colors duration-200 text-white shadow-sm w-full sm:w-auto"
           >
             <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M12 15C13.6569 15 15 13.6569 15 12C15 10.3431 13.6569 9 12 9C10.3431 9 9 10.3431 9 12C9 13.6569 10.3431 15 12 15Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
@@ -36,7 +36,7 @@ function Users() {
           </button>
           <button 
             onClick={() => setIsBulkUploadModalOpen(true)}
-            className="flex items-center justify-center gap-2 px-4 py-2.5 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors duration-200 text-gray-700 shadow-sm w-full sm:w-auto"
+            className="flex items-center justify-center gap-2 px-4 py-2.5 bg-blue-500 hover:bg-blue-600 rounded-lg transition-colors duration-200 text-white shadow-sm w-full sm:w-auto"
           >
             <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M12 3V16M12 3L7 8M12 3L17 8" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
@@ -49,16 +49,15 @@ function Users() {
 
       <Card>
         <div className="p-4">
-          <div className="flex flex-col sm:flex-row gap-4">
-            <div className="w-full sm:w-1/2">
-              <SearchInput
-                placeholder="Search users..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
-            </div>
-            <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
-              <div className="relative w-full sm:w-40">
+          <div className="flex flex-col lg:flex-row items-center gap-4">
+            <SearchInput
+              placeholder="Search users..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full lg:flex-1"
+            />
+            <div className="flex flex-row gap-4 w-full lg:w-auto">
+              <div className="relative flex-1 lg:w-40">
                 <select
                   className="w-full appearance-none bg-white border border-gray-200 rounded-lg px-4 py-2.5 pr-10"
                   value={selectedRole}
@@ -74,7 +73,7 @@ function Users() {
                   </svg>
                 </div>
               </div>
-              <div className="relative w-full sm:w-40">
+              <div className="relative flex-1 lg:w-40">
                 <select
                   className="w-full appearance-none bg-white border border-gray-200 rounded-lg px-4 py-2.5 pr-10"
                   value={selectedStatus}

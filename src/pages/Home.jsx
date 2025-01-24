@@ -16,12 +16,17 @@ const Home = () => {
 
       {/* Video Player Section */}
       <div className="max-w-4xl mx-auto mb-12">
-        <div className="relative aspect-video rounded-lg overflow-hidden">
+        <div className="relative aspect-video rounded-lg overflow-hidden bg-gray-100">
           <iframe
             src="https://drive.google.com/file/d/15pEgWedqPb32V8wNUlQMXZ9xIRso-K8o/preview"
             className="absolute top-0 left-0 w-full h-full"
             allow="autoplay"
             allowFullScreen
+            title="Product Demo Video"
+            onError={(e) => {
+              e.target.style.display = 'none';
+              e.target.parentElement.innerHTML = '<div class="flex items-center justify-center h-full"><p class="text-gray-600">Video unavailable. Please try again later.</p></div>';
+            }}
           ></iframe>
         </div>
       </div>

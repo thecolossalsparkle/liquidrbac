@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import SearchInput from '../components/common/SearchInput';
 import Table from '../components/common/Table';
 import Button from '../components/common/Button';
@@ -16,6 +16,7 @@ const Invoices = () => {
   const [showBulkUploadModal, setShowBulkUploadModal] = useState(false);
   const [selectedStatus, setSelectedStatus] = useState('all');
   const [selectedTimeRange, setSelectedTimeRange] = useState('all');
+  const [searchQuery, setSearchQuery] = useState('');
   
   // Mock data for initial render
   const [invoices] = useState([
@@ -72,10 +73,23 @@ const Invoices = () => {
     }
   ]);
 
-  const totalPages = entriesPerPage === 'all' ? 1 : Math.ceil(invoices.length / entriesPerPage);
+  const filteredInvoices = useMemo(() => {
+    if (!searchQuery.trim()) return invoices;
+    
+    const searchTerm = searchQuery.toLowerCase().trim();
+    return invoices.filter(invoice => 
+      invoice.id.toLowerCase().includes(searchTerm) ||
+      invoice.customer.toLowerCase().includes(searchTerm) ||
+      invoice.vendor.name.toLowerCase().includes(searchTerm) ||
+      invoice.amount.toLowerCase().includes(searchTerm) ||
+      invoice.status.toLowerCase().includes(searchTerm)
+    );
+  }, [searchQuery, invoices]);
+
+  const totalPages = entriesPerPage === 'all' ? 1 : Math.ceil(filteredInvoices.length / entriesPerPage);
   const paginatedInvoices = entriesPerPage === 'all' 
-    ? invoices 
-    : invoices.slice((currentPage - 1) * entriesPerPage, currentPage * entriesPerPage);
+    ? filteredInvoices 
+    : filteredInvoices.slice((currentPage - 1) * entriesPerPage, currentPage * entriesPerPage);
 
   const handleView = (invoice) => {
     setSelectedInvoice(invoice);
@@ -95,7 +109,10 @@ const Invoices = () => {
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <h1 className="text-2xl font-semibold">Invoice Management</h1>
+        <div>
+          <h1 className="text-2xl font-semibold">Invoice Management</h1>
+          <p className="text-gray-500">Manage and track your invoices</p>
+        </div>
         <div className="flex flex-wrap gap-3 w-full sm:w-auto">
           <Button 
             variant="secondary" 
@@ -118,39 +135,70 @@ const Invoices = () => {
       </div>
 
       <div className="bg-white rounded-lg p-4 sm:p-6 shadow-sm">
-        <div className="space-y-4 mb-6">
-          <div className="w-full">
-            <SearchInput 
-              placeholder="Search invoices..." 
-              onChange={(e) => console.log(e.target.value)}
-            />
-          </div>
-
-          <div className="grid grid-cols-2 gap-2">
-            <select 
-              className={`form-select rounded-md border-gray-300 w-full ${
-                selectedStatus !== 'all' ? 'bg-blue-50 border-blue-300' : ''
-              }`}
-              value={selectedStatus}
-              onChange={(e) => setSelectedStatus(e.target.value)}
-            >
-              <option value="all">All Status</option>
-              <option value="paid">Paid</option>
-              <option value="pending">Pending</option>
-              <option value="overdue">Overdue</option>
-            </select>
-            <select 
-              className={`form-select rounded-md border-gray-300 w-full ${
-                selectedTimeRange !== 'all' ? 'bg-blue-50 border-blue-300' : ''
-              }`}
-              value={selectedTimeRange}
-              onChange={(e) => setSelectedTimeRange(e.target.value)}
-            >
-              <option value="all">All Time</option>
-              <option value="this_month">This Month</option>
-              <option value="last_month">Last Month</option>
-              <option value="custom">Custom Range</option>
-            </select>
+        <div className="mb-6">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+            <div className="w-full sm:flex-1">
+              <SearchInput 
+                placeholder="Search invoices..." 
+                onChange={(e) => {
+                  setSearchQuery(e.target.value);
+                  setCurrentPage(1); // Reset to first page when searching
+                }}
+                value={searchQuery}
+              />
+            </div>
+            <div className="relative w-full sm:w-48">
+              <div className="relative">
+                <select 
+                  className={`appearance-none w-full px-4 py-2 pl-10 pr-8 border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 ${
+                    selectedStatus !== 'all' ? 'bg-blue-50' : 'bg-white'
+                  }`}
+                  value={selectedStatus}
+                  onChange={(e) => setSelectedStatus(e.target.value)}
+                >
+                  <option value="all">All Status</option>
+                  <option value="paid">Paid</option>
+                  <option value="pending">Pending</option>
+                  <option value="overdue">Overdue</option>
+                </select>
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <svg className="h-5 w-5 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                </div>
+                <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                  <svg className="h-5 w-5 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </div>
+              </div>
+            </div>
+            <div className="relative w-full sm:w-48">
+              <div className="relative">
+                <select 
+                  className={`appearance-none w-full px-4 py-2 pl-10 pr-8 border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 ${
+                    selectedTimeRange !== 'all' ? 'bg-blue-50' : 'bg-white'
+                  }`}
+                  value={selectedTimeRange}
+                  onChange={(e) => setSelectedTimeRange(e.target.value)}
+                >
+                  <option value="all">All Time</option>
+                  <option value="this_month">This Month</option>
+                  <option value="last_month">Last Month</option>
+                  <option value="custom">Custom Range</option>
+                </select>
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <svg className="h-5 w-5 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  </svg>
+                </div>
+                <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                  <svg className="h-5 w-5 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -202,7 +250,7 @@ const Invoices = () => {
         </div>
 
         <div className="mt-4 space-y-4 sm:space-y-0 sm:flex sm:items-center sm:justify-between border-t border-gray-200 pt-4">
-          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2">
+          <div className="flex flex-col sm:flex-row items-center sm:items-center gap-2">
             <div className="flex items-center gap-2">
               <span className="text-gray-600 whitespace-nowrap">Show entries:</span>
               <select 
@@ -220,10 +268,10 @@ const Invoices = () => {
                 <option value="all">All</option>
               </select>
             </div>
-            <span className="text-sm text-gray-700">
-              Showing {entriesPerPage === 'all' ? 'all' : Math.min((currentPage - 1) * entriesPerPage + 1, invoices.length)} to{' '}
-              {entriesPerPage === 'all' ? invoices.length : Math.min(currentPage * entriesPerPage, invoices.length)} of{' '}
-              {invoices.length} entries
+            <span className="text-sm text-gray-700 text-center">
+              Showing {entriesPerPage === 'all' ? 'all' : Math.min((currentPage - 1) * entriesPerPage + 1, filteredInvoices.length)} to{' '}
+              {entriesPerPage === 'all' ? filteredInvoices.length : Math.min(currentPage * entriesPerPage, filteredInvoices.length)} of{' '}
+              {filteredInvoices.length} entries
             </span>
           </div>
           
