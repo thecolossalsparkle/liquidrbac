@@ -6,7 +6,9 @@ import Users from './pages/Users';
 import Invoices from './pages/Invoices';
 import Calendar from './pages/Calendar';
 import Home from './pages/Home';
+import AuditLogs from './pages/AuditLogs';
 import Installments from './pages/Installments';
+import TallySupport from './pages/TallySupport';
 import './App.css';
 
 function App() {
@@ -20,6 +22,9 @@ function App() {
           <Route path="/invoices" element={<Invoices />} />
           <Route path="/calendar" element={<Calendar />} />
           <Route path="/installments" element={<Installments />} />
+          <Route path="/audit-logs" element={<AuditLogs />} />
+          <Route path="/erp-setup" element={<TallySupport />} />
+          
         </Routes>
       </PageLayout>
     </Router>
