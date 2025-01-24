@@ -1,43 +1,298 @@
 import React, { useState } from 'react';
-import Card from '../components/common/Card';
+import SearchInput from '../components/common/SearchInput';
+import Table from '../components/common/Table';
 import Button from '../components/common/Button';
+import StatusBadge from '../components/invoices/StatusBadge';
+import InvoiceModal from '../components/invoices/InvoiceModal';
+import CreateInvoiceModal from '../components/invoices/CreateInvoiceModal';
+import BulkUploadModal from '../components/invoices/BulkUploadModal';
 
 const Invoices = () => {
+  const [selectedInvoice, setSelectedInvoice] = useState(null);
+  const [modalMode, setModalMode] = useState(null); // 'view' or 'edit'
+  const [entriesPerPage, setEntriesPerPage] = useState(10);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [showCreateModal, setShowCreateModal] = useState(false);
+  const [showBulkUploadModal, setShowBulkUploadModal] = useState(false);
+  const [selectedStatus, setSelectedStatus] = useState('all');
+  const [selectedTimeRange, setSelectedTimeRange] = useState('all');
+  
+  // Mock data for initial render
+  const [invoices] = useState([
+    {
+      id: 'INV-001',
+      customer: 'John Doe',
+      amount: '₹1,200.00',
+      status: 'paid',
+      dueDate: '2024-03-15',
+      vendor: {
+        name: 'XYZ Sdn',
+        email: 'xyz@gmail',
+        phone: '1234567',
+        address: '#3, Brigade M'
+      },
+      subtotal: '1,000.00',
+      tax: '200.00',
+      discount: '0.00',
+      total: '1,200.00'
+    },
+    {
+      id: 'INV-002',
+      customer: 'Jane Smith',
+      amount: '₹850.00',
+      status: 'pending',
+      dueDate: '2024-03-14',
+      vendor: {
+        name: 'ABC Corp',
+        email: 'abc@gmail',
+        phone: '9876543',
+        address: '#45, Tech Park'
+      },
+      subtotal: '800.00',
+      tax: '50.00',
+      discount: '0.00',
+      total: '850.00'
+    },
+    {
+      id: 'INV-003',
+      customer: 'Bob Johnson',
+      amount: '₹2,300.00',
+      status: 'overdue',
+      dueDate: '2024-03-10',
+      vendor: {
+        name: 'PQR Ltd',
+        email: 'pqr@gmail',
+        phone: '4567890',
+        address: '#12, Business Hub'
+      },
+      subtotal: '2,000.00',
+      tax: '300.00',
+      discount: '0.00',
+      total: '2,300.00'
+    }
+  ]);
+
+  const totalPages = entriesPerPage === 'all' ? 1 : Math.ceil(invoices.length / entriesPerPage);
+  const paginatedInvoices = entriesPerPage === 'all' 
+    ? invoices 
+    : invoices.slice((currentPage - 1) * entriesPerPage, currentPage * entriesPerPage);
+
+  const handleView = (invoice) => {
+    setSelectedInvoice(invoice);
+    setModalMode('view');
+  };
+
+  const handleEdit = (invoice) => {
+    setSelectedInvoice(invoice);
+    setModalMode('edit');
+  };
+
+  const handleCloseModal = () => {
+    setSelectedInvoice(null);
+    setModalMode(null);
+  };
+
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-semibold">Access the details of your invoices with just a click.</h1>
-      
-      <p className="text-center">Watch the video below to learn how it works:</p>
-      
-      <Card className="aspect-video">
-        <div className="relative h-full">
-          <div className="absolute inset-0 flex items-center justify-center bg-gray-100 rounded-lg">
-            <Button
-              variant="primary"
-              size="large"
-              className="flex items-center gap-2"
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <h1 className="text-2xl font-semibold">Invoice Management</h1>
+        <div className="flex flex-wrap gap-3 w-full sm:w-auto">
+          <Button 
+            variant="secondary" 
+            className="flex items-center gap-2 flex-1 sm:flex-initial justify-center"
+            onClick={() => setShowCreateModal(true)}
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+            </svg>
+            Create Invoice
+          </Button>
+          <Button 
+            variant="secondary"
+            onClick={() => setShowBulkUploadModal(true)}
+            className="flex-1 sm:flex-initial justify-center"
+          >
+            Bulk Upload
+          </Button>
+        </div>
+      </div>
+
+      <div className="bg-white rounded-lg p-4 sm:p-6 shadow-sm">
+        <div className="space-y-4 mb-6">
+          <div className="w-full">
+            <SearchInput 
+              placeholder="Search invoices..." 
+              onChange={(e) => console.log(e.target.value)}
+            />
+          </div>
+
+          <div className="grid grid-cols-2 gap-2">
+            <select 
+              className={`form-select rounded-md border-gray-300 w-full ${
+                selectedStatus !== 'all' ? 'bg-blue-50 border-blue-300' : ''
+              }`}
+              value={selectedStatus}
+              onChange={(e) => setSelectedStatus(e.target.value)}
             >
-              <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 20 20">
-                <path d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" />
-              </svg>
-              Play Tutorial
-            </Button>
+              <option value="all">All Status</option>
+              <option value="paid">Paid</option>
+              <option value="pending">Pending</option>
+              <option value="overdue">Overdue</option>
+            </select>
+            <select 
+              className={`form-select rounded-md border-gray-300 w-full ${
+                selectedTimeRange !== 'all' ? 'bg-blue-50 border-blue-300' : ''
+              }`}
+              value={selectedTimeRange}
+              onChange={(e) => setSelectedTimeRange(e.target.value)}
+            >
+              <option value="all">All Time</option>
+              <option value="this_month">This Month</option>
+              <option value="last_month">Last Month</option>
+              <option value="custom">Custom Range</option>
+            </select>
           </div>
         </div>
-      </Card>
 
-      <div className="fixed bottom-8 right-8">
-        <Button
-          variant="primary"
-          size="large"
-          className="flex items-center gap-2"
-        >
-          <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-            <path d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z" />
-          </svg>
-          Start Chatting
-        </Button>
+        <div className="overflow-x-auto -mx-4 sm:mx-0">
+          <Table
+            columns={[
+              { header: 'Invoice #', accessor: 'id' },
+              { header: 'Vendor Name', accessor: 'vendor.name' },
+              { header: 'Amount', accessor: 'amount' },
+              { header: 'Status', accessor: 'status' },
+              { header: 'Due Date', accessor: 'dueDate' },
+              { header: 'Actions', accessor: 'actions' }
+            ]}
+            data={paginatedInvoices}
+            emptyMessage="No Invoices Found"
+            renderCell={(column, item) => {
+              if (column.accessor === 'status') {
+                return <StatusBadge status={item.status} />;
+              }
+              if (column.accessor === 'actions') {
+                return (
+                  <div className="flex gap-2 justify-end">
+                    <button 
+                      className="text-blue-600 hover:text-blue-800 p-2"
+                      onClick={() => handleView(item)}
+                    >
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                      </svg>
+                    </button>
+                    <button 
+                      className="text-gray-600 hover:text-gray-800 p-2"
+                      onClick={() => handleEdit(item)}
+                    >
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                      </svg>
+                    </button>
+                  </div>
+                );
+              }
+              if (column.accessor === 'vendor.name') {
+                return item.vendor?.name;
+              }
+              return item[column.accessor];
+            }}
+          />
+        </div>
+
+        <div className="mt-4 space-y-4 sm:space-y-0 sm:flex sm:items-center sm:justify-between border-t border-gray-200 pt-4">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2">
+            <div className="flex items-center gap-2">
+              <span className="text-gray-600 whitespace-nowrap">Show entries:</span>
+              <select 
+                className="form-select rounded-md border-gray-300 w-24"
+                value={entriesPerPage}
+                onChange={(e) => {
+                  setEntriesPerPage(e.target.value === 'all' ? 'all' : Number(e.target.value));
+                  setCurrentPage(1);
+                }}
+              >
+                <option value={10}>10</option>
+                <option value={25}>25</option>
+                <option value={50}>50</option>
+                <option value={100}>100</option>
+                <option value="all">All</option>
+              </select>
+            </div>
+            <span className="text-sm text-gray-700">
+              Showing {entriesPerPage === 'all' ? 'all' : Math.min((currentPage - 1) * entriesPerPage + 1, invoices.length)} to{' '}
+              {entriesPerPage === 'all' ? invoices.length : Math.min(currentPage * entriesPerPage, invoices.length)} of{' '}
+              {invoices.length} entries
+            </span>
+          </div>
+          
+          {entriesPerPage !== 'all' && (
+            <div className="flex justify-center sm:justify-end items-center gap-2">
+              <button
+                onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                disabled={currentPage === 1}
+                className={`px-3 py-1 rounded border ${
+                  currentPage === 1
+                    ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                    : 'bg-white text-gray-700 hover:bg-gray-50'
+                }`}
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                </svg>
+              </button>
+              
+              <div className="flex items-center gap-1">
+                {Array.from({ length: totalPages }, (_, index) => (
+                  <button
+                    key={index + 1}
+                    onClick={() => setCurrentPage(index + 1)}
+                    className={`px-3 py-1 rounded border ${
+                      currentPage === index + 1
+                        ? 'bg-blue-50 text-blue-600 border-blue-500'
+                        : 'bg-white text-gray-700 hover:bg-gray-50'
+                    }`}
+                  >
+                    {index + 1}
+                  </button>
+                ))}
+              </div>
+
+              <button
+                onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+                disabled={currentPage === totalPages}
+                className={`px-3 py-1 rounded border ${
+                  currentPage === totalPages
+                    ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                    : 'bg-white text-gray-700 hover:bg-gray-50'
+                }`}
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+              </button>
+            </div>
+          )}
+        </div>
       </div>
+
+      <InvoiceModal
+        isOpen={!!selectedInvoice}
+        onClose={handleCloseModal}
+        invoice={selectedInvoice}
+        mode={modalMode}
+      />
+
+      <CreateInvoiceModal
+        isOpen={showCreateModal}
+        onClose={() => setShowCreateModal(false)}
+      />
+
+      <BulkUploadModal
+        isOpen={showBulkUploadModal}
+        onClose={() => setShowBulkUploadModal(false)}
+      />
     </div>
   );
 };
