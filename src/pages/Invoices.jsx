@@ -345,4 +345,4 @@ const Invoices = () => {
   );
 };
 
-export default Invoices; 
+export default Invoices;

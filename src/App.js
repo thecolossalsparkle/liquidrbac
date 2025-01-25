@@ -8,9 +8,8 @@ import Calendar from './pages/Calendar';
 import Home from './pages/Home';
 import AuditLogs from './pages/AuditLogs';
 import Installments from './pages/Installments';
-import TallySupport from './pages/TallySupport';
+import ERPSetup from './pages/ERPSetup';
 import './App.css';
-
 function App() {
   return (
     <Router>
@@ -23,12 +22,10 @@ function App() {
           <Route path="/calendar" element={<Calendar />} />
           <Route path="/installments" element={<Installments />} />
           <Route path="/audit-logs" element={<AuditLogs />} />
-          <Route path="/erp-setup" element={<TallySupport />} />
-          
+          <Route path="/erp-setup" element={<ERPSetup />} />
         </Routes>
       </PageLayout>
     </Router>
   );
 }
-
 export default App;
