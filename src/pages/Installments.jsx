@@ -2,11 +2,13 @@ import React, { useState } from 'react';
 import InstallmentsHeader from '../components/installments/InstallmentsHeader';
 import InstallmentsTable from '../components/installments/InstallmentsTable';
 import InstallmentsFilters from '../components/installments/InstallmentsFilters';
+import TablePagination from '../components/common/TablePagination';
 
 const Installments = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedFilter, setSelectedFilter] = useState('Installment ID');
   const [itemsPerPage, setItemsPerPage] = useState(10);
+  const [currentPage, setCurrentPage] = useState(1);
   
   // Sample data for testing
   const [installments] = useState([
@@ -52,6 +54,21 @@ const Installments = () => {
     }
   ]);
 
+  // Filter installments based on search
+  const filteredInstallments = installments.filter(installment => {
+    const searchLower = searchQuery.toLowerCase();
+    return (
+      installment.id.toLowerCase().includes(searchLower) ||
+      installment.vendorName.toLowerCase().includes(searchLower) ||
+      installment.invoiceNumber.toLowerCase().includes(searchLower)
+    );
+  });
+
+  // Calculate pagination
+  const indexOfLastEntry = currentPage * itemsPerPage;
+  const indexOfFirstEntry = indexOfLastEntry - itemsPerPage;
+  const currentEntries = filteredInstallments.slice(indexOfFirstEntry, indexOfLastEntry);
+
   return (
     <div className="p-3 sm:p-4 md:p-6">
       <InstallmentsHeader />
@@ -64,7 +81,18 @@ const Installments = () => {
           itemsPerPage={itemsPerPage}
           setItemsPerPage={setItemsPerPage}
         />
-        <InstallmentsTable installments={installments} />
+        <InstallmentsTable installments={currentEntries} />
+        
+        <TablePagination
+          totalEntries={filteredInstallments.length}
+          entriesPerPage={itemsPerPage}
+          currentPage={currentPage}
+          onEntriesPerPageChange={(value) => {
+            setItemsPerPage(value);
+            setCurrentPage(1);
+          }}
+          onPageChange={setCurrentPage}
+        />
       </div>
     </div>
   );

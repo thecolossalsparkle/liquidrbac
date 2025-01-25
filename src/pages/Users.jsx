@@ -4,6 +4,7 @@ import Card from '../components/common/Card';
 import ThresholdSettingsModal from '../components/modals/ThresholdSettingsModal';
 import BulkUploadModal from '../components/modals/BulkUploadModal';
 import { CogIcon, UploadIcon, ChevronDownIcon } from '@heroicons/react/outline';
+import TablePagination from '../components/common/TablePagination';
 
 const ROLES = ['All Roles', 'Accountant', 'Manager', 'Auditor', 'Operator', 'Not Assigned'];
 const STATUS = ['All Status', 'Active', 'Inactive'];
@@ -15,6 +16,8 @@ function Users() {
   const [isThresholdModalOpen, setIsThresholdModalOpen] = useState(false);
   const [isBulkUploadModalOpen, setIsBulkUploadModalOpen] = useState(false);
   const [editingUser, setEditingUser] = useState(null);
+  const [entriesPerPage, setEntriesPerPage] = useState(10);
+  const [currentPage, setCurrentPage] = useState(1);
 
   // Updated mock data
   const [users, setUsers] = useState([
@@ -61,6 +64,20 @@ function Users() {
       status: 'Active'
     }
   ]);
+
+  // Filter users based on search and filters
+  const filteredUsers = users.filter(user => {
+    const matchesSearch = user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                         user.email.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesRole = selectedRole === 'All Roles' || user.role === selectedRole;
+    const matchesStatus = selectedStatus === 'All Status' || user.status === selectedStatus;
+    return matchesSearch && matchesRole && matchesStatus;
+  });
+
+  // Calculate pagination
+  const indexOfLastEntry = currentPage * entriesPerPage;
+  const indexOfFirstEntry = indexOfLastEntry - entriesPerPage;
+  const currentEntries = filteredUsers.slice(indexOfFirstEntry, indexOfLastEntry);
 
   const handleSave = (userId) => {
     setEditingUser(null);
@@ -259,12 +276,12 @@ function Users() {
 
         {/* Mobile view */}
         <div className="block lg:hidden px-4 pb-4">
-          {users.length === 0 ? (
+          {filteredUsers.length === 0 ? (
             <div className="text-center text-gray-500 py-4">
               No Users Found
             </div>
           ) : (
-            users.map((user) => (
+            currentEntries.map((user) => (
               <MobileUserCard key={user.id} user={user} />
             ))
           )}
@@ -283,14 +300,14 @@ function Users() {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-200">
-              {users.length === 0 ? (
+              {filteredUsers.length === 0 ? (
                 <tr>
                   <td colSpan="5" className="px-6 py-4 text-center text-gray-500">
                     No Users Found
                   </td>
                 </tr>
               ) : (
-                users.map((user) => (
+                currentEntries.map((user) => (
                   <tr key={user.id}>
                     <td className="px-6 py-4">{user.name}</td>
                     <td className="px-6 py-4">{user.email}</td>
@@ -372,6 +389,17 @@ function Users() {
           </table>
         </div>
       </Card>
+
+      <TablePagination
+        totalEntries={filteredUsers.length}
+        entriesPerPage={entriesPerPage}
+        currentPage={currentPage}
+        onEntriesPerPageChange={(value) => {
+          setEntriesPerPage(value);
+          setCurrentPage(1);
+        }}
+        onPageChange={setCurrentPage}
+      />
 
       <ThresholdSettingsModal
         isOpen={isThresholdModalOpen}

@@ -10,12 +10,23 @@ import {
   CogIcon,
   ClipboardListIcon,
   ViewGridIcon,
-  UserCircleIcon
+  UserCircleIcon,
+  LogoutIcon
 } from '@heroicons/react/outline';
 import newLogo from '../../assets/images/LiquidMind-Logo.png';
+import { Menu, Transition } from '@headlessui/react';
+import { Fragment } from 'react';
 
 const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  
+  // Add mock user data (replace with actual user data from your auth system)
+  const userData = {
+    name: "John Doe",
+    phone: "+1 (555) 123-4567",
+    email: "john.doe@example.com",
+    role: "Administrator"
+  };
 
   const navItems = [
     { path: '/', label: 'HOME', icon: HomeIcon },
@@ -27,6 +38,11 @@ const Navbar = () => {
     { path: '/erp-setup', label: 'ERP SETUP', icon: CogIcon },
     { path: '/audit-logs', label: 'AUDIT LOGS', icon: ClipboardListIcon },
   ];
+
+  const handleLogout = () => {
+    // Add your logout logic here
+    console.log('Logging out...');
+  };
 
   return (
     <nav className="bg-black text-white">
@@ -93,10 +109,57 @@ const Navbar = () => {
 
           {/* User Menu */}
           <div className="flex-shrink-0 flex items-center">
-            <div className="flex items-center space-x-2 text-gray-300 hover:text-white cursor-pointer px-2">
-              <UserCircleIcon className="h-7 w-7" />
-              <span className="hidden sm:inline text-sm font-medium">User Name</span>
-            </div>
+            <Menu as="div" className="relative z-50">
+              <Menu.Button className="flex items-center space-x-2 text-gray-300 hover:text-white cursor-pointer px-2">
+                <UserCircleIcon className="h-7 w-7" />
+                <span className="hidden sm:inline text-sm font-medium">{userData.name}</span>
+              </Menu.Button>
+
+              <Transition
+                as={Fragment}
+                enter="transition ease-out duration-100"
+                enterFrom="transform opacity-0 scale-95"
+                enterTo="transform opacity-100 scale-100"
+                leave="transition ease-in duration-75"
+                leaveFrom="transform opacity-100 scale-100"
+                leaveTo="transform opacity-0 scale-95"
+              >
+                <Menu.Items className="absolute right-0 mt-2 w-64 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-50">
+                  <div className="px-4 py-3">
+                    <div className="text-sm text-gray-900 font-medium border-b pb-2 mb-2">
+                      {userData.name}
+                    </div>
+                    <div className="text-sm text-gray-700 py-1">
+                      <div className="flex items-center space-x-2">
+                        <span className="font-medium">Phone:</span>
+                        <span>{userData.phone}</span>
+                      </div>
+                    </div>
+                    <div className="text-sm text-gray-700 py-1">
+                      <div className="flex items-center space-x-2">
+                        <span className="font-medium">Email:</span>
+                        <span>{userData.email}</span>
+                      </div>
+                    </div>
+                    <div className="text-sm text-gray-700 py-1">
+                      <div className="flex items-center space-x-2">
+                        <span className="font-medium">Role:</span>
+                        <span>{userData.role}</span>
+                      </div>
+                    </div>
+                    <div className="border-t mt-2 pt-2">
+                      <button
+                        onClick={handleLogout}
+                        className="w-full text-left flex items-center space-x-2 px-1 py-2 text-sm text-red-600 hover:bg-red-50 rounded-md transition-colors"
+                      >
+                        <LogoutIcon className="h-5 w-5" />
+                        <span>Logout</span>
+                      </button>
+                    </div>
+                  </div>
+                </Menu.Items>
+              </Transition>
+            </Menu>
           </div>
         </div>
       </div>

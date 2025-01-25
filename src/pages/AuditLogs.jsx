@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Card from '../components/common/Card';
 import LogsFilter from '../components/audit/LogsFilter';
 import LogsTable from '../components/audit/LogsTable';
+import TablePagination from '../components/common/TablePagination';
 
 const AuditLogs = () => {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
@@ -20,6 +21,8 @@ const AuditLogs = () => {
   const [selectedAction, setSelectedAction] = useState('All Actions');
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
+  const [entriesPerPage, setEntriesPerPage] = useState(10);
+  const [currentPage, setCurrentPage] = useState(1);
   
   // Sample dummy data for the logs
   const [logs, setLogs] = useState([
@@ -79,6 +82,19 @@ const AuditLogs = () => {
       log.id === logId ? { ...log, flagged: !log.flagged } : log
     ));
   };
+
+  // Filter logs based on search and filters
+  const filteredLogs = logs.filter(log => {
+    const matchesSearch = log.user.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                         log.details.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesAction = selectedAction === 'All Actions' || log.action === selectedAction;
+    return matchesSearch && matchesAction;
+  });
+
+  // Calculate pagination
+  const indexOfLastEntry = currentPage * entriesPerPage;
+  const indexOfFirstEntry = indexOfLastEntry - entriesPerPage;
+  const currentEntries = filteredLogs.slice(indexOfFirstEntry, indexOfLastEntry);
 
   const styles = {
     container: {
@@ -174,17 +190,28 @@ const AuditLogs = () => {
 
         {isMobile ? (
           <div>
-            {logs.map(log => (
+            {currentEntries.map(log => (
               <MobileLogCard key={log.id} log={log} />
             ))}
           </div>
         ) : (
           <LogsTable 
-            logs={logs} 
+            logs={currentEntries} 
             onFlagToggle={handleFlagToggle}
             isMobile={isMobile} 
           />
         )}
+
+        <TablePagination
+          totalEntries={filteredLogs.length}
+          entriesPerPage={entriesPerPage}
+          currentPage={currentPage}
+          onEntriesPerPageChange={(value) => {
+            setEntriesPerPage(value);
+            setCurrentPage(1);
+          }}
+          onPageChange={setCurrentPage}
+        />
       </div>
     </Card>
   );

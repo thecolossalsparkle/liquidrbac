@@ -6,6 +6,7 @@ import StatusBadge from '../components/invoices/StatusBadge';
 import InvoiceModal from '../components/invoices/InvoiceModal';
 import CreateInvoiceModal from '../components/invoices/CreateInvoiceModal';
 import BulkUploadModal from '../components/invoices/BulkUploadModal';
+import TablePagination from '../components/common/TablePagination';
 import { 
   PlusIcon, CheckCircleIcon, CalendarIcon, ChevronDownIcon, EyeIcon, PencilIcon, ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/outline';
 
@@ -236,76 +237,16 @@ const Invoices = () => {
           />
         </div>
 
-        <div className="mt-4 space-y-4 sm:space-y-0 sm:flex sm:items-center sm:justify-between border-t border-gray-200 pt-4">
-          <div className="flex flex-col sm:flex-row items-center sm:items-center gap-2">
-            <div className="flex items-center gap-2">
-              <span className="text-gray-600 whitespace-nowrap">Show entries:</span>
-              <select 
-                className="form-select rounded-md border-gray-300 w-24"
-                value={entriesPerPage}
-                onChange={(e) => {
-                  setEntriesPerPage(e.target.value === 'all' ? 'all' : Number(e.target.value));
-                  setCurrentPage(1);
-                }}
-              >
-                <option value={10}>10</option>
-                <option value={25}>25</option>
-                <option value={50}>50</option>
-                <option value={100}>100</option>
-                <option value="all">All</option>
-              </select>
-            </div>
-            <span className="text-sm text-gray-700 text-center">
-              Showing {entriesPerPage === 'all' ? 'all' : Math.min((currentPage - 1) * entriesPerPage + 1, filteredInvoices.length)} to{' '}
-              {entriesPerPage === 'all' ? filteredInvoices.length : Math.min(currentPage * entriesPerPage, filteredInvoices.length)} of{' '}
-              {filteredInvoices.length} entries
-            </span>
-          </div>
-          
-          {entriesPerPage !== 'all' && (
-            <div className="flex justify-center sm:justify-end items-center gap-2">
-              <button
-                onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
-                disabled={currentPage === 1}
-                className={`px-3 py-1 rounded border ${
-                  currentPage === 1
-                    ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                    : 'bg-white text-gray-700 hover:bg-gray-50'
-                }`}
-              >
-                <ChevronLeftIcon className="w-5 h-5" />
-              </button>
-              
-              <div className="flex items-center gap-1">
-                {Array.from({ length: totalPages }, (_, index) => (
-                  <button
-                    key={index + 1}
-                    onClick={() => setCurrentPage(index + 1)}
-                    className={`px-3 py-1 rounded border ${
-                      currentPage === index + 1
-                        ? 'bg-blue-50 text-blue-600 border-blue-500'
-                        : 'bg-white text-gray-700 hover:bg-gray-50'
-                    }`}
-                  >
-                    {index + 1}
-                  </button>
-                ))}
-              </div>
-
-              <button
-                onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
-                disabled={currentPage === totalPages}
-                className={`px-3 py-1 rounded border ${
-                  currentPage === totalPages
-                    ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                    : 'bg-white text-gray-700 hover:bg-gray-50'
-                }`}
-              >
-                <ChevronRightIcon className="w-5 h-5" />
-              </button>
-            </div>
-          )}
-        </div>
+        <TablePagination
+          totalEntries={filteredInvoices.length}
+          entriesPerPage={entriesPerPage === 'all' ? filteredInvoices.length : entriesPerPage}
+          currentPage={currentPage}
+          onEntriesPerPageChange={(value) => {
+            setEntriesPerPage(value === filteredInvoices.length ? 'all' : value);
+            setCurrentPage(1);
+          }}
+          onPageChange={setCurrentPage}
+        />
       </div>
 
       <InvoiceModal

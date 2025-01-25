@@ -3,11 +3,14 @@ import Calendar from '../components/calendar/Calendar';
 import MonthYearPicker from '../components/calendar/MonthYearPicker';
 import InstallmentTable from '../components/calendar/InstallmentTable';
 import Card from '../components/common/Card';
+import TablePagination from '../components/common/TablePagination';
 
 const Installments = () => {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [currentMonth, setCurrentMonth] = useState(new Date().getMonth() + 1);
   const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
+  const [entriesPerPage, setEntriesPerPage] = useState(10);
+  const [currentPage, setCurrentPage] = useState(1);
   
   // Sample installment data for January 2025
   const sampleInstallmentData = {
@@ -77,17 +80,26 @@ const Installments = () => {
     const dateKey = date.toISOString().split('T')[0];
     // Set installments for the selected date (or empty array if no data)
     setInstallments(sampleInstallmentData[dateKey] || []);
+    // Reset to first page when date changes
+    setCurrentPage(1);
   };
 
   const handleMonthChange = (month) => {
     setCurrentMonth(parseInt(month));
-    setInstallments([]); // Clear installments when month changes
+    setInstallments([]);
+    setCurrentPage(1);
   };
 
   const handleYearChange = (year) => {
     setCurrentYear(parseInt(year));
-    setInstallments([]); // Clear installments when year changes
+    setInstallments([]);
+    setCurrentPage(1);
   };
+
+  // Calculate pagination
+  const indexOfLastEntry = currentPage * entriesPerPage;
+  const indexOfFirstEntry = indexOfLastEntry - entriesPerPage;
+  const currentEntries = installments.slice(indexOfFirstEntry, indexOfLastEntry);
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
@@ -132,7 +144,20 @@ const Installments = () => {
         {/* Table Section */}
         <div className="lg:col-span-7">
           <Card className="h-full overflow-hidden">
-            <InstallmentTable installments={installments} />
+            <InstallmentTable installments={currentEntries} />
+            
+            {installments.length > 0 && (
+              <TablePagination
+                totalEntries={installments.length}
+                entriesPerPage={entriesPerPage}
+                currentPage={currentPage}
+                onEntriesPerPageChange={(value) => {
+                  setEntriesPerPage(value);
+                  setCurrentPage(1);
+                }}
+                onPageChange={setCurrentPage}
+              />
+            )}
           </Card>
         </div>
       </div>
