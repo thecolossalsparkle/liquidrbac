@@ -67,6 +67,97 @@ function Users() {
     console.log('Saving changes for user:', userId);
   };
 
+  const MobileUserCard = ({ user }) => (
+    <div className="bg-white rounded-lg shadow p-4 mb-4">
+      <div className="space-y-2.5">
+        <div className="flex justify-between items-center">
+          <div className="flex flex-col">
+            <div className="text-sm font-medium text-gray-600">Name</div>
+            <div className="text-base text-gray-900">{user.name}</div>
+          </div>
+          {editingUser === user.id ? (
+            <div className="flex gap-2">
+              <button
+                onClick={() => handleSave(user.id)}
+                className="text-xs bg-green-500 text-white px-2.5 py-1 rounded-md hover:bg-green-600 transition-colors duration-200"
+              >
+                Save
+              </button>
+              <button
+                onClick={() => setEditingUser(null)}
+                className="text-xs bg-gray-500 text-white px-2.5 py-1 rounded-md hover:bg-gray-600 transition-colors duration-200"
+              >
+                Cancel
+              </button>
+            </div>
+          ) : (
+            <button
+              onClick={() => setEditingUser(user.id)}
+              className="text-xs text-blue-600 hover:text-blue-800 px-2.5 py-1"
+            >
+              Edit
+            </button>
+          )}
+        </div>
+
+        <div>
+          <div className="text-sm font-medium text-gray-600">Email</div>
+          <div className="text-base text-gray-900">{user.email}</div>
+        </div>
+
+        <div>
+          <div className="text-sm font-medium text-gray-600">Role</div>
+          {editingUser === user.id ? (
+            <select
+              className="w-full bg-white border border-gray-200 rounded-lg px-3 py-1 mt-1 text-base"
+              value={user.role}
+              onChange={(e) => {
+                const updatedUsers = users.map(u => 
+                  u.id === user.id ? { ...u, role: e.target.value } : u
+                );
+                setUsers(updatedUsers);
+              }}
+            >
+              {ROLES.filter(role => role !== 'All Roles').map((role) => (
+                <option key={role} value={role}>{role}</option>
+              ))}
+            </select>
+          ) : (
+            <div className="text-base text-gray-900">{user.role}</div>
+          )}
+        </div>
+
+        <div>
+          <div className="text-sm font-medium text-gray-600">Status</div>
+          {editingUser === user.id ? (
+            <select
+              className="w-full bg-white border border-gray-200 rounded-lg px-3 py-1 mt-1 text-base"
+              value={user.status}
+              onChange={(e) => {
+                const updatedUsers = users.map(u => 
+                  u.id === user.id ? { ...u, status: e.target.value } : u
+                );
+                setUsers(updatedUsers);
+              }}
+            >
+              {STATUS.filter(status => status !== 'All Status').map((status) => (
+                <option key={status} value={status}>{status}</option>
+              ))}
+            </select>
+          ) : (
+            <span className={`inline-block px-2 py-0.5 rounded-full text-xs ${
+              user.status === 'Active' 
+                ? 'bg-green-100 text-green-800' 
+                : 'bg-red-100 text-red-800'
+            }`}>
+              {user.status}
+            </span>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+
   return (
     <div className="p-4 sm:p-6">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
@@ -106,7 +197,43 @@ function Users() {
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full lg:flex-1"
             />
-            <div className="flex flex-row gap-4 w-full lg:w-auto">
+            {/* Mobile filters - stacked */}
+            <div className="flex flex-col w-full gap-4 lg:hidden">
+              <div className="relative w-full">
+                <select
+                  className="w-full appearance-none bg-white border border-gray-200 rounded-lg px-4 py-2.5 pr-10"
+                  value={selectedRole}
+                  onChange={(e) => setSelectedRole(e.target.value)}
+                >
+                  {ROLES.map((role) => (
+                    <option key={role} value={role}>{role}</option>
+                  ))}
+                </select>
+                <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                  <svg className="w-4 h-4 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
+                  </svg>
+                </div>
+              </div>
+              <div className="relative w-full">
+                <select
+                  className="w-full appearance-none bg-white border border-gray-200 rounded-lg px-4 py-2.5 pr-10"
+                  value={selectedStatus}
+                  onChange={(e) => setSelectedStatus(e.target.value)}
+                >
+                  {STATUS.map((status) => (
+                    <option key={status} value={status}>{status}</option>
+                  ))}
+                </select>
+                <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                  <svg className="w-4 h-4 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
+                  </svg>
+                </div>
+              </div>
+            </div>
+            {/* Desktop filters - side by side */}
+            <div className="hidden lg:flex flex-row gap-4 w-full lg:w-auto">
               <div className="relative flex-1 lg:w-40">
                 <select
                   className="w-full appearance-none bg-white border border-gray-200 rounded-lg px-4 py-2.5 pr-10"
@@ -143,7 +270,21 @@ function Users() {
           </div>
         </div>
 
-        <div className="overflow-x-auto">
+        {/* Mobile view */}
+        <div className="block lg:hidden px-4 pb-4">
+          {users.length === 0 ? (
+            <div className="text-center text-gray-500 py-4">
+              No Users Found
+            </div>
+          ) : (
+            users.map((user) => (
+              <MobileUserCard key={user.id} user={user} />
+            ))
+          )}
+        </div>
+
+        {/* Desktop view */}
+        <div className="hidden lg:block overflow-x-auto">
           <table className="w-full">
             <thead className="bg-gray-50">
               <tr>
