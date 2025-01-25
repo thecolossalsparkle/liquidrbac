@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import Card from '../components/common/Card';
+import { ChatIcon } from '@heroicons/react/outline';
 
 const Home = () => {
   return (
@@ -49,13 +49,7 @@ const Home = () => {
           <button 
             className="bg-green-500 text-white px-6 py-3 rounded-full flex items-center space-x-2 hover:bg-green-600 transition-colors shadow-lg whitespace-nowrap"
           >
-            <svg 
-              className="w-5 h-5 sm:w-6 sm:h-6" 
-              fill="currentColor" 
-              viewBox="0 0 24 24"
-            >
-              <path d="M12 2C6.48 2 2 6.48 2 12c0 2.17.7 4.19 1.94 5.86L2.87 22l4.14-1.07C8.58 21.63 10.24 22 12 22c5.52 0 10-4.48 10-10S17.52 2 12 2zm.89 14h-2v-2h2v2zm0-3h-2V7h2v6z"/>
-            </svg>
+            <ChatIcon className="w-5 h-5 sm:w-6 sm:h-6" />
             <span>Start Chatting</span>
           </button>
         </div>
