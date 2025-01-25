@@ -1,166 +1,7 @@
 import React, { useState, useRef } from 'react';
 import Card from '../common/Card';
 import Button from '../common/Button';
-import styled from 'styled-components';
 import TallyVideo from '../../assets/videos/Tally_erp_setup.mp4';
-
-const VideoContainer = styled.div`
-  width: 100%;
-  max-width: 900px;
-  margin: 0 auto;
-  position: relative;
-  display: ${props => props.isVisible ? 'block' : 'none'};
-`;
-
-const StyledVideo = styled.video`
-  width: 100%;
-  height: auto;
-  border-radius: 8px;
-`;
-
-const SlideContainer = styled.div`
-  width: 100%;
-  max-width: 900px;
-  margin: 0 auto;
-  text-align: center;
-  position: relative;
-  display: ${props => props.isVisible ? 'block' : 'none'};
-`;
-
-const SlideImage = styled.img`
-  width: 100%;
-  height: auto;
-  border-radius: 8px;
-  margin-bottom: 5px;
-`;
-
-const NavigationOverlay = styled.div`
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0 5px;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-
-  ${SlideContainer}:hover & {
-    opacity: 1;
-  }
-`;
-
-const ArrowButton = styled.button`
-  background: rgba(255, 255, 255, 0.3);
-  border: none;
-  font-size: 24px;
-  color: rgba(0, 0, 0, 0.6);
-  cursor: ${props => props.disabled ? 'not-allowed' : 'pointer'};
-  padding: 15px;
-  border-radius: 50%;
-  width: 50px;
-  height: 50px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.2s ease;
-  opacity: ${props => props.disabled ? '0.3' : '1'};
-  
-  &:hover:not(:disabled) {
-    background: rgba(255, 255, 255, 0.5);
-    transform: scale(1.1);
-  }
-  
-  &:focus {
-    outline: none;
-  }
-`;
-
-const DotsContainer = styled.div`
-  position: absolute;
-  bottom: 15px;
-  left: 0;
-  right: 0;
-  display: flex;
-  justify-content: center;
-  gap: 6px;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-
-  ${SlideContainer}:hover & {
-    opacity: 1;
-  }
-`;
-
-const Dot = styled.div`
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: ${props => props.active ? 'rgba(255, 255, 255, 0.9)' : 'rgba(255, 255, 255, 0.4)'};
-  transition: all 0.2s ease;
-  cursor: pointer;
-
-  &:hover {
-    transform: scale(1.2);
-  }
-`;
-
-const ContentWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-  margin: 0 auto;
-  padding: 15px;
-  width: 100%;
-  max-width: 900px;
-`;
-
-const ButtonContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  gap: 8px;
-  margin-top: 0;
-  margin-bottom: 0;
-`;
-
-const FullscreenButton = styled.button`
-  position: absolute;
-  top: 20px;
-  right: 20px;
-  background: rgba(255, 255, 255, 0.3);
-  border: none;
-  color: rgba(0, 0, 0, 0.6);
-  cursor: pointer;
-  padding: 10px;
-  border-radius: 50%;
-  width: 40px;
-  height: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.2s ease;
-  opacity: 0;
-  z-index: 10;
-
-  ${SlideContainer}:hover & {
-    opacity: 1;
-  }
-
-  &:hover {
-    background: rgba(255, 255, 255, 0.5);
-    transform: scale(1.1);
-  }
-
-  &:focus {
-    outline: none;
-  }
-`;
-
-const FullscreenIcon = styled.span`
-  font-size: 18px;
-`;
 
 const TutorialVideo = () => {
   const [showVideo, setShowVideo] = useState(false);
@@ -176,10 +17,6 @@ const TutorialVideo = () => {
 
   const handleNextSlide = () => {
     setCurrentSlide(prev => Math.min(totalSlides, prev + 1));
-  };
-
-  const handleDotClick = (slideNumber) => {
-    setCurrentSlide(slideNumber);
   };
 
   const toggleFullscreen = async () => {
@@ -198,93 +35,86 @@ const TutorialVideo = () => {
     }
   };
 
-  const handleKeyPress = (e) => {
-    if (e.key === 'ArrowLeft') {
-      handlePrevSlide();
-    } else if (e.key === 'ArrowRight') {
-      handleNextSlide();
-    } else if (e.key === 'Escape') {
-      setIsFullscreen(false);
-    }
-  };
-
-  React.useEffect(() => {
-    document.addEventListener('keydown', handleKeyPress);
-    return () => {
-      document.removeEventListener('keydown', handleKeyPress);
-    };
-  }, []);
-
   return (
-    <Card style={{ 
-      padding: '15px',
-      width: '100%',
-      maxWidth: '900px',
-      marginLeft: 'auto',
-      marginRight: 'auto',
-      boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)'
-    }}>
-      <ContentWrapper>
-        <SlideContainer ref={slideContainerRef} isVisible={!showVideo}>
-          <SlideImage 
+    <Card className="w-full shadow-sm overflow-hidden">
+      <div className="p-4 sm:p-6 space-y-4">
+        <div 
+          ref={slideContainerRef}
+          className={`relative ${!showVideo ? 'block' : 'hidden'}`}
+        >
+          <img 
             src={require(`../../assets/images/${currentSlide}.png`)}
             alt={`Tutorial Slide ${currentSlide}`}
+            className="w-full h-auto rounded-lg"
           />
           
-          <NavigationOverlay>
-            <ArrowButton 
+          {/* Navigation Controls */}
+          <div className="absolute inset-0 flex items-center justify-between p-2 opacity-0 hover:opacity-100 transition-opacity">
+            <button 
               onClick={handlePrevSlide}
               disabled={currentSlide === 1}
+              className="p-2 rounded-full bg-white/30 hover:bg-white/50 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
             >
-              &#60;
-            </ArrowButton>
+              <span className="text-2xl">&#60;</span>
+            </button>
             
-            <ArrowButton 
+            <button 
               onClick={handleNextSlide}
               disabled={currentSlide === totalSlides}
+              className="p-2 rounded-full bg-white/30 hover:bg-white/50 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
             >
-              &#62;
-            </ArrowButton>
-          </NavigationOverlay>
+              <span className="text-2xl">&#62;</span>
+            </button>
+          </div>
 
-          <FullscreenButton onClick={toggleFullscreen}>
-            <FullscreenIcon>
-              {isFullscreen ? '⤌' : '⤢'}
-            </FullscreenIcon>
-          </FullscreenButton>
+          {/* Fullscreen Button */}
+          <button 
+            onClick={toggleFullscreen}
+            className="absolute top-4 right-4 p-2 rounded-full bg-white/30 hover:bg-white/50 transition-all opacity-0 hover:opacity-100"
+          >
+            <span className="text-lg">{isFullscreen ? '⤌' : '⤢'}</span>
+          </button>
 
-          <DotsContainer>
+          {/* Slide Dots */}
+          <div className="absolute bottom-4 left-0 right-0 flex justify-center gap-1.5 opacity-0 hover:opacity-100 transition-opacity">
             {[...Array(totalSlides)].map((_, index) => (
-              <Dot 
+              <button 
                 key={index + 1}
-                active={currentSlide === index + 1}
-                onClick={() => handleDotClick(index + 1)}
+                onClick={() => setCurrentSlide(index + 1)}
+                className={`w-2 h-2 rounded-full transition-all
+                  ${currentSlide === index + 1 
+                    ? 'bg-white/90 scale-110' 
+                    : 'bg-white/40 hover:scale-110'
+                  }`}
               />
             ))}
-          </DotsContainer>
-        </SlideContainer>
+          </div>
+        </div>
 
-        <VideoContainer isVisible={showVideo}>
-          <StyledVideo 
+        {/* Video Player */}
+        <div className={`w-full ${showVideo ? 'block' : 'hidden'}`}>
+          <video 
             ref={videoRef}
             controls
-            width="100%"
+            className="w-full rounded-lg"
             controlsList="nodownload"
           >
             <source src={TallyVideo} type="video/mp4" />
             Your browser does not support the video tag.
-          </StyledVideo>
-        </VideoContainer>
+          </video>
+        </div>
 
-        <ButtonContainer>
+        {/* Toggle Button */}
+        <div className="flex justify-center">
           <Button 
             variant="primary"
             onClick={() => setShowVideo(!showVideo)}
+            className="w-full sm:w-auto text-sm sm:text-base px-4 py-2 sm:px-6 sm:py-2.5"
           >
             {showVideo ? 'Show Tutorial Slides' : 'Show Tutorial Video'}
           </Button>
-        </ButtonContainer>
-      </ContentWrapper>
+        </div>
+      </div>
     </Card>
   );
 };

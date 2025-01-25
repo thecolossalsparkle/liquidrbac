@@ -31,9 +31,9 @@ const Navbar = () => {
   return (
     <nav className="bg-black text-white">
       <div className="max-w-full mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16 relative">
+        <div className="flex items-center h-16 relative">
           {/* Mobile: Hamburger Button */}
-          <div className="lg:hidden">
+          <div className="flex-shrink-0 lg:hidden">
             <button
               onClick={() => setIsMobileMenuOpen(true)}
               className="inline-flex items-center justify-center p-2 rounded-md text-gray-300 hover:bg-gray-800 hover:text-white"
@@ -55,8 +55,8 @@ const Navbar = () => {
             </button>
           </div>
 
-          {/* Logo - with more left padding */}
-          <div className="flex-shrink-0 flex items-center lg:w-48 pl-12">
+          {/* Logo - centered on mobile */}
+          <div className="flex-1 flex justify-center lg:justify-start lg:w-48">
             <Link 
               to="/" 
               className="flex items-center"
@@ -69,7 +69,7 @@ const Navbar = () => {
             </Link>
           </div>
 
-          {/* Desktop Navigation - with more spacing */}
+          {/* Desktop Navigation */}
           <div className="hidden lg:flex lg:items-center lg:justify-center flex-1 px-6">
             <div className="flex space-x-6">
               {navItems.map(({ path, label, icon: Icon }) => (
@@ -91,10 +91,12 @@ const Navbar = () => {
             </div>
           </div>
 
-          {/* User Menu - with more padding */}
-          <div className="flex-shrink-0 flex items-center space-x-3 text-gray-300 hover:text-white cursor-pointer px-4">
-            <UserCircleIcon className="h-7 w-7" />
-            <span className="hidden sm:inline text-sm font-medium pr-2">User Name</span>
+          {/* User Menu */}
+          <div className="flex-shrink-0 flex items-center">
+            <div className="flex items-center space-x-2 text-gray-300 hover:text-white cursor-pointer px-2">
+              <UserCircleIcon className="h-7 w-7" />
+              <span className="hidden sm:inline text-sm font-medium">User Name</span>
+            </div>
           </div>
         </div>
       </div>
