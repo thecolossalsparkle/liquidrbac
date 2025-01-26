@@ -6,68 +6,86 @@ import Card from '../components/common/Card';
 import TablePagination from '../components/common/TablePagination';
 
 const Installments = () => {
-  const [selectedDate, setSelectedDate] = useState(new Date());
-  const [currentMonth, setCurrentMonth] = useState(new Date().getMonth() + 1);
-  const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
+  const [selectedDate, setSelectedDate] = useState(new Date(2025, 0, 1)); // Jan 1, 2025
+  const [currentMonth, setCurrentMonth] = useState(1); // January
+  const [currentYear, setCurrentYear] = useState(2025);
   const [entriesPerPage, setEntriesPerPage] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
   
-  // Sample installment data for January 2025
+  // Static data for January 2025
   const sampleInstallmentData = {
     '2025-01-05': [
       {
         invoiceNumber: 'INV-001',
         date: '2025-01-05',
-        amount: '$1,500',
+        amount: '₹1,500',
         status: 'Pending',
         vendorName: 'Tech Solutions Inc',
-        totalAmount: '$4,500'
+        totalAmount: '₹4,500'
       },
       {
         invoiceNumber: 'INV-002',
         date: '2025-01-05',
-        amount: '$2,000',
+        amount: '₹2,300',
         status: 'Paid',
         vendorName: 'Office Supplies Co',
-        totalAmount: '$2,000'
+        totalAmount: '₹2,300'
+      }
+    ],
+    '2025-01-12': [
+      {
+        invoiceNumber: 'INV-003',
+        date: '2025-01-12',
+        amount: '₹3,200',
+        status: 'Pending',
+        vendorName: 'Marketing Agency',
+        totalAmount: '₹9,600'
       }
     ],
     '2025-01-15': [
       {
-        invoiceNumber: 'INV-003',
+        invoiceNumber: 'INV-004',
         date: '2025-01-15',
-        amount: '$3,000',
+        amount: '₹5,000',
+        status: 'Overdue',
+        vendorName: 'IT Services Ltd',
+        totalAmount: '₹15,000'
+      },
+      {
+        invoiceNumber: 'INV-005',
+        date: '2025-01-15',
+        amount: '₹1,800',
         status: 'Pending',
-        vendorName: 'Marketing Pro',
-        totalAmount: '$9,000'
+        vendorName: 'Consulting Group',
+        totalAmount: '₹5,400'
       }
     ],
     '2025-01-20': [
       {
-        invoiceNumber: 'INV-004',
+        invoiceNumber: 'INV-006',
         date: '2025-01-20',
-        amount: '$1,800',
-        status: 'Overdue',
-        vendorName: 'IT Services Ltd',
-        totalAmount: '$5,400'
-      },
-      {
-        invoiceNumber: 'INV-005',
-        date: '2025-01-20',
-        amount: '$2,500',
+        amount: '₹2,750',
         status: 'Paid',
-        vendorName: 'Equipment Corp',
-        totalAmount: '$2,500'
+        vendorName: 'Design Studio',
+        totalAmount: '₹2,750'
       }
     ],
-    '2025-01-25': [
+    '2025-01-31': [
       {
-        invoiceNumber: 'INV-006',
-        date: '2025-01-25',
-        amount: '$4,000',
+        invoiceNumber: 'INV-007',
+        date: '2025-01-31',
+        amount: '₹4,200',
         status: 'Pending',
-        vendorName: 'Consulting Group',
-        totalAmount: '$12,000'
+        vendorName: 'Equipment Supplier',
+        totalAmount: '₹12,600'
+      },
+      {
+        invoiceNumber: 'INV-008',
+        date: '2025-01-31',
+        amount: '₹3,100',
+        status: 'Overdue',
+        vendorName: 'Maintenance Services',
+        totalAmount: '₹9,300'
       }
     ]
   };
@@ -76,11 +94,9 @@ const Installments = () => {
 
   const handleDateSelect = (date) => {
     setSelectedDate(date);
-    // Format the date to match our sample data keys
-    const dateKey = date.toISOString().split('T')[0];
-    // Set installments for the selected date (or empty array if no data)
+    // Format date to YYYY-MM-DD without timezone conversion
+    const dateKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
     setInstallments(sampleInstallmentData[dateKey] || []);
-    // Reset to first page when date changes
     setCurrentPage(1);
   };
 
@@ -96,7 +112,7 @@ const Installments = () => {
     setCurrentPage(1);
   };
 
-  // Calculate pagination
+  // Simple pagination calculation
   const indexOfLastEntry = currentPage * entriesPerPage;
   const indexOfFirstEntry = indexOfLastEntry - entriesPerPage;
   const currentEntries = installments.slice(indexOfFirstEntry, indexOfLastEntry);
