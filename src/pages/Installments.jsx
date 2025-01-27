@@ -78,8 +78,6 @@ const Installments = () => {
           setSearchQuery={setSearchQuery}
           selectedFilter={selectedFilter}
           setSelectedFilter={setSelectedFilter}
-          itemsPerPage={itemsPerPage}
-          setItemsPerPage={setItemsPerPage}
         />
         <InstallmentsTable installments={currentEntries} />
         

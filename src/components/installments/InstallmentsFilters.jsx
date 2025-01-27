@@ -5,12 +5,9 @@ const InstallmentsFilters = ({
   searchQuery,
   setSearchQuery,
   selectedFilter,
-  setSelectedFilter,
-  itemsPerPage,
-  setItemsPerPage
+  setSelectedFilter
 }) => {
   const filterOptions = ['Installment ID', 'Vendor Name'];
-  const pageOptions = [10, 20, 30, 50];
 
   return (
     <div className="p-3 sm:p-4 border-b flex flex-col sm:flex-row gap-3 sm:items-center">
@@ -33,16 +30,6 @@ const InstallmentsFilters = ({
         >
           {filterOptions.map(option => (
             <option key={option} value={option}>{option}</option>
-          ))}
-        </select>
-
-        <select
-          className="border rounded-lg px-3 py-2 text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-blue-500 w-full sm:w-auto"
-          value={itemsPerPage}
-          onChange={(e) => setItemsPerPage(Number(e.target.value))}
-        >
-          {pageOptions.map(option => (
-            <option key={option} value={option}>{option} per page</option>
           ))}
         </select>
       </div>
