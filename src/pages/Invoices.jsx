@@ -241,7 +241,7 @@ const Invoices = () => {
       <div className="bg-white rounded-lg p-4 sm:p-6 shadow-sm">
         <div className="mb-6">
           <div className="flex flex-col lg:flex-row gap-4">
-            <div className={`w-full ${selectedTimeRange === 'custom' ? 'lg:w-2/5' : 'lg:w-3/5'}`}>
+            <div className={`w-full ${selectedTimeRange === 'custom' ? 'lg:w-2/5' : 'lg:w-3/4'}`}>
               <SearchInput 
                 placeholder="Search invoices..." 
                 onChange={(e) => {
@@ -251,8 +251,8 @@ const Invoices = () => {
                 value={searchQuery}
               />
             </div>
-            <div className={`flex flex-col sm:flex-row gap-4 w-full ${selectedTimeRange === 'custom' ? 'lg:w-3/5' : 'lg:w-2/5'}`}>
-              <div className="relative w-full sm:flex-1 lg:max-w-[180px]">
+            <div className={`flex flex-col sm:flex-row gap-4 w-full ${selectedTimeRange === 'custom' ? 'lg:w-3/5' : 'lg:w-1/4'}`}>
+              <div className="relative w-full sm:flex-1">
                 <div className="relative">
                   <select 
                     className={`appearance-none w-full px-4 py-2 pl-10 pr-8 border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 ${
@@ -274,7 +274,7 @@ const Invoices = () => {
                   </div>
                 </div>
               </div>
-              <div className="relative w-full sm:flex-1 lg:max-w-[180px]">
+              <div className="relative w-full sm:flex-1">
                 <div className="relative">
                   <select 
                     className={`appearance-none w-full px-4 py-2 pl-10 pr-8 border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 ${
