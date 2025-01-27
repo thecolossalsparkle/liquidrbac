@@ -20,15 +20,20 @@ const Invoices = () => {
   const [selectedStatus, setSelectedStatus] = useState('all');
   const [selectedTimeRange, setSelectedTimeRange] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
+  const [customDateRange, setCustomDateRange] = useState({
+    startDate: '',
+    endDate: ''
+  });
   
   // Mock data for initial render
   const [invoices] = useState([
+    // Previous Month
     {
       id: 'INV-001',
       customer: 'John Doe',
       amount: '₹1,200.00',
       status: 'paid',
-      dueDate: '2024-03-15',
+      dueDate: '2025-01-15', // Previous month
       vendor: {
         name: 'XYZ Sdn',
         email: 'xyz@gmail',
@@ -45,7 +50,7 @@ const Invoices = () => {
       customer: 'Jane Smith',
       amount: '₹850.00',
       status: 'pending',
-      dueDate: '2024-03-14',
+      dueDate: '2025-01-28', // Previous month
       vendor: {
         name: 'ABC Corp',
         email: 'abc@gmail',
@@ -57,12 +62,13 @@ const Invoices = () => {
       discount: '0.00',
       total: '850.00'
     },
+    // Current Month
     {
       id: 'INV-003',
       customer: 'Bob Johnson',
       amount: '₹2,300.00',
       status: 'overdue',
-      dueDate: '2024-03-10',
+      dueDate: '2024-12-10', // Current month
       vendor: {
         name: 'PQR Ltd',
         email: 'pqr@gmail',
@@ -73,21 +79,118 @@ const Invoices = () => {
       tax: '300.00',
       discount: '0.00',
       total: '2,300.00'
+    },
+    {
+      id: 'INV-004',
+      customer: 'Sarah Wilson',
+      amount: '₹1,750.00',
+      status: 'pending',
+      dueDate: '2024-12-25', // Current month
+      vendor: {
+        name: 'DEF Industries',
+        email: 'def@gmail',
+        phone: '5557777',
+        address: '#78, Tech Valley'
+      },
+      subtotal: '1,500.00',
+      tax: '250.00',
+      discount: '0.00',
+      total: '1,750.00'
+    },
+    // Next Month
+    {
+      id: 'INV-005',
+      customer: 'Mike Brown',
+      amount: '₹3,100.00',
+      status: 'pending',
+      dueDate: '2025-01-05', // Next month
+      vendor: {
+        name: 'GHI Solutions',
+        email: 'ghi@gmail',
+        phone: '8889999',
+        address: '#90, Innovation Park'
+      },
+      subtotal: '2,800.00',
+      tax: '300.00',
+      discount: '0.00',
+      total: '3,100.00'
+    },
+    {
+      id: 'INV-006',
+      customer: 'Emily Davis',
+      amount: '₹1,900.00',
+      status: 'paid',
+      dueDate: '2025-04-15', // Next month
+      vendor: {
+        name: 'JKL Systems',
+        email: 'jkl@gmail',
+        phone: '7773333',
+        address: '#34, Business Square'
+      },
+      subtotal: '1,700.00',
+      tax: '200.00',
+      discount: '0.00',
+      total: '1,900.00'
     }
   ]);
 
   const filteredInvoices = useMemo(() => {
-    if (!searchQuery.trim()) return invoices;
-    
-    const searchTerm = searchQuery.toLowerCase().trim();
-    return invoices.filter(invoice => 
-      invoice.id.toLowerCase().includes(searchTerm) ||
-      invoice.customer.toLowerCase().includes(searchTerm) ||
-      invoice.vendor.name.toLowerCase().includes(searchTerm) ||
-      invoice.amount.toLowerCase().includes(searchTerm) ||
-      invoice.status.toLowerCase().includes(searchTerm)
-    );
-  }, [searchQuery, invoices]);
+    let filtered = invoices;
+
+    // Apply status filter
+    if (selectedStatus !== 'all') {
+      filtered = filtered.filter(invoice => 
+        invoice.status.toLowerCase() === selectedStatus.toLowerCase()
+      );
+    }
+
+    // Apply time range filter
+    if (selectedTimeRange !== 'all') {
+      const today = new Date();
+      const currentYear = today.getFullYear();
+      const currentMonth = today.getMonth();
+      
+      // Set up date ranges
+      const startOfThisMonth = new Date(currentYear, currentMonth, 1);
+      const endOfThisMonth = new Date(currentYear, currentMonth + 1, 0);
+      const startOfLastMonth = new Date(currentYear, currentMonth - 1, 1);
+      const endOfLastMonth = new Date(currentYear, currentMonth, 0);
+
+      filtered = filtered.filter(invoice => {
+        const invoiceDate = new Date(invoice.dueDate);
+        
+        switch (selectedTimeRange) {
+          case 'this_month':
+            return invoiceDate >= startOfThisMonth && invoiceDate <= endOfThisMonth;
+          case 'last_month':
+            return invoiceDate >= startOfLastMonth && invoiceDate <= endOfLastMonth;
+          case 'custom':
+            if (customDateRange.startDate && customDateRange.endDate) {
+              const start = new Date(customDateRange.startDate);
+              const end = new Date(customDateRange.endDate);
+              return invoiceDate >= start && invoiceDate <= end;
+            }
+            return true;
+          default:
+            return true;
+        }
+      });
+    }
+
+    // Apply search filter
+    if (searchQuery.trim()) {
+      const searchTerm = searchQuery.toLowerCase().trim();
+      filtered = filtered.filter(invoice => 
+        invoice.id.toLowerCase().includes(searchTerm) ||
+        invoice.customer.toLowerCase().includes(searchTerm) ||
+        invoice.vendor.name.toLowerCase().includes(searchTerm) ||
+        invoice.amount.toLowerCase().includes(searchTerm) ||
+        invoice.status.toLowerCase().includes(searchTerm)
+      );
+    }
+
+    return filtered;
+  }, [searchQuery, invoices, selectedStatus, selectedTimeRange, customDateRange]);
 
   const totalPages = entriesPerPage === 'all' ? 1 : Math.ceil(filteredInvoices.length / entriesPerPage);
   const paginatedInvoices = entriesPerPage === 'all' 
@@ -192,6 +295,23 @@ const Invoices = () => {
                 </div>
               </div>
             </div>
+
+            {selectedTimeRange === 'custom' && (
+              <div className="flex gap-2 w-full sm:w-auto">
+                <input
+                  type="date"
+                  className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500"
+                  value={customDateRange.startDate}
+                  onChange={(e) => setCustomDateRange(prev => ({ ...prev, startDate: e.target.value }))}
+                />
+                <input
+                  type="date"
+                  className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500"
+                  value={customDateRange.endDate}
+                  onChange={(e) => setCustomDateRange(prev => ({ ...prev, endDate: e.target.value }))}
+                />
+              </div>
+            )}
           </div>
         </div>
 
