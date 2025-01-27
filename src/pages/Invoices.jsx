@@ -240,78 +240,80 @@ const Invoices = () => {
 
       <div className="bg-white rounded-lg p-4 sm:p-6 shadow-sm">
         <div className="mb-6">
-          <div className="flex flex-col sm:flex-row sm:items-center gap-4">
-            <div className="w-full sm:flex-1">
+          <div className="flex flex-col lg:flex-row gap-4">
+            <div className={`w-full ${selectedTimeRange === 'custom' ? 'lg:w-2/5' : 'lg:w-3/5'}`}>
               <SearchInput 
                 placeholder="Search invoices..." 
                 onChange={(e) => {
                   setSearchQuery(e.target.value);
-                  setCurrentPage(1); // Reset to first page when searching
+                  setCurrentPage(1);
                 }}
                 value={searchQuery}
               />
             </div>
-            <div className="relative w-full sm:w-48">
-              <div className="relative">
-                <select 
-                  className={`appearance-none w-full px-4 py-2 pl-10 pr-8 border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 ${
-                    selectedStatus !== 'all' ? 'bg-blue-50' : 'bg-white'
-                  }`}
-                  value={selectedStatus}
-                  onChange={(e) => setSelectedStatus(e.target.value)}
-                >
-                  <option value="all">All Status</option>
-                  <option value="paid">Paid</option>
-                  <option value="pending">Pending</option>
-                  <option value="overdue">Overdue</option>
-                </select>
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <CheckCircleIcon className="h-5 w-5 text-gray-400" />
-                </div>
-                <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                  <ChevronDownIcon className="h-5 w-5 text-gray-400" />
-                </div>
-              </div>
-            </div>
-            <div className="relative w-full sm:w-48">
-              <div className="relative">
-                <select 
-                  className={`appearance-none w-full px-4 py-2 pl-10 pr-8 border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 ${
-                    selectedTimeRange !== 'all' ? 'bg-blue-50' : 'bg-white'
-                  }`}
-                  value={selectedTimeRange}
-                  onChange={(e) => setSelectedTimeRange(e.target.value)}
-                >
-                  <option value="all">All Time</option>
-                  <option value="this_month">This Month</option>
-                  <option value="last_month">Last Month</option>
-                  <option value="custom">Custom Range</option>
-                </select>
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <CalendarIcon className="h-5 w-5 text-gray-400" />
-                </div>
-                <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                  <ChevronDownIcon className="h-5 w-5 text-gray-400" />
+            <div className={`flex flex-col sm:flex-row gap-4 w-full ${selectedTimeRange === 'custom' ? 'lg:w-3/5' : 'lg:w-2/5'}`}>
+              <div className="relative w-full sm:flex-1 lg:max-w-[180px]">
+                <div className="relative">
+                  <select 
+                    className={`appearance-none w-full px-4 py-2 pl-10 pr-8 border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 ${
+                      selectedStatus !== 'all' ? 'bg-blue-50' : 'bg-white'
+                    }`}
+                    value={selectedStatus}
+                    onChange={(e) => setSelectedStatus(e.target.value)}
+                  >
+                    <option value="all">All Status</option>
+                    <option value="paid">Paid</option>
+                    <option value="pending">Pending</option>
+                    <option value="overdue">Overdue</option>
+                  </select>
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <CheckCircleIcon className="h-5 w-5 text-gray-400" />
+                  </div>
+                  <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                    <ChevronDownIcon className="h-5 w-5 text-gray-400" />
+                  </div>
                 </div>
               </div>
-            </div>
+              <div className="relative w-full sm:flex-1 lg:max-w-[180px]">
+                <div className="relative">
+                  <select 
+                    className={`appearance-none w-full px-4 py-2 pl-10 pr-8 border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 ${
+                      selectedTimeRange !== 'all' ? 'bg-blue-50' : 'bg-white'
+                    }`}
+                    value={selectedTimeRange}
+                    onChange={(e) => setSelectedTimeRange(e.target.value)}
+                  >
+                    <option value="all">All Time</option>
+                    <option value="this_month">This Month</option>
+                    <option value="last_month">Last Month</option>
+                    <option value="custom">Custom Range</option>
+                  </select>
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <CalendarIcon className="h-5 w-5 text-gray-400" />
+                  </div>
+                  <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                    <ChevronDownIcon className="h-5 w-5 text-gray-400" />
+                  </div>
+                </div>
+              </div>
 
-            {selectedTimeRange === 'custom' && (
-              <div className="flex gap-2 w-full sm:w-auto">
-                <input
-                  type="date"
-                  className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500"
-                  value={customDateRange.startDate}
-                  onChange={(e) => setCustomDateRange(prev => ({ ...prev, startDate: e.target.value }))}
-                />
-                <input
-                  type="date"
-                  className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500"
-                  value={customDateRange.endDate}
-                  onChange={(e) => setCustomDateRange(prev => ({ ...prev, endDate: e.target.value }))}
-                />
-              </div>
-            )}
+              {selectedTimeRange === 'custom' && (
+                <div className="flex flex-col sm:flex-row gap-2 w-full lg:w-auto">
+                  <input
+                    type="date"
+                    className="w-full sm:w-40 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500"
+                    value={customDateRange.startDate}
+                    onChange={(e) => setCustomDateRange(prev => ({ ...prev, startDate: e.target.value }))}
+                  />
+                  <input
+                    type="date"
+                    className="w-full sm:w-40 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500"
+                    value={customDateRange.endDate}
+                    onChange={(e) => setCustomDateRange(prev => ({ ...prev, endDate: e.target.value }))}
+                  />
+                </div>
+              )}
+            </div>
           </div>
         </div>
 
