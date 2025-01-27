@@ -162,18 +162,16 @@ const Installments = () => {
           <Card className="h-full overflow-hidden">
             <InstallmentTable installments={currentEntries} />
             
-            {installments.length > 0 && (
-              <TablePagination
-                totalEntries={installments.length}
-                entriesPerPage={entriesPerPage}
-                currentPage={currentPage}
-                onEntriesPerPageChange={(value) => {
-                  setEntriesPerPage(value);
-                  setCurrentPage(1);
-                }}
-                onPageChange={setCurrentPage}
-              />
-            )}
+            <TablePagination
+              totalEntries={installments.length}
+              entriesPerPage={entriesPerPage}
+              currentPage={currentPage}
+              onEntriesPerPageChange={(value) => {
+                setEntriesPerPage(value);
+                setCurrentPage(1);
+              }}
+              onPageChange={setCurrentPage}
+            />
           </Card>
         </div>
       </div>
