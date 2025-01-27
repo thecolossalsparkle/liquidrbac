@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { ChatIcon } from '@heroicons/react/outline';
+import { FaWhatsapp } from 'react-icons/fa';
 
 const Home = () => {
   return (
@@ -49,7 +49,7 @@ const Home = () => {
           <button 
             className="bg-green-500 text-white px-6 py-3 rounded-full flex items-center space-x-2 hover:bg-green-600 transition-colors shadow-lg whitespace-nowrap"
           >
-            <ChatIcon className="w-5 h-5 sm:w-6 sm:h-6" />
+            <FaWhatsapp className="w-5 h-5 sm:w-6 sm:h-6" />
             <span>Start Chatting</span>
           </button>
         </div>

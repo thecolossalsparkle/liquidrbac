@@ -1,5 +1,6 @@
 import React from 'react';
-import { Grid, Paper, Typography, Box } from '@mui/material';
+import { Grid, Paper, Typography, Box, Button, Stack, useTheme, useMediaQuery } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 import KPICard from '../../components/common/KPICard';
 import RecentActivity from '../../components/common/RecentActivity';
 import { 
@@ -10,10 +11,16 @@ import {
   ExclamationCircleIcon,
   ChartBarIcon,
   ExclamationIcon,
-  RefreshIcon
+  RefreshIcon,
+  DownloadIcon
 } from '@heroicons/react/outline';
 
 const AdminDashboard = () => {
+  const navigate = useNavigate();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const isTablet = useMediaQuery(theme.breakpoints.down('md'));
+
   const kpiData = [
     { title: 'Active Users', value: '150', icon: <UsersIcon className="h-6 w-6" /> },
     { title: 'Invoices Processed', value: '1,234', icon: <DocumentTextIcon className="h-6 w-6" /> },
@@ -33,15 +40,59 @@ const AdminDashboard = () => {
 
   return (
     <Box>
-      <Typography variant="h4" component="h1" sx={{ mb: 4 }}>
-        Admin Dashboard
-      </Typography>
+      <Box sx={{ 
+        display: 'flex', 
+        flexDirection: isMobile ? 'column' : 'row',
+        justifyContent: 'space-between', 
+        alignItems: isMobile ? 'flex-start' : 'center',
+        gap: isMobile ? 2 : 0,
+        mb: 4 
+      }}>
+        <Typography variant="h4" component="h1" sx={{
+          fontSize: isMobile ? '1.5rem' : '2rem'
+        }}>
+          Admin Dashboard
+        </Typography>
+        <Stack 
+          direction={isMobile ? 'column' : 'row'} 
+          spacing={2}
+          sx={{ width: isMobile ? '100%' : 'auto' }}
+        >
+          <Button 
+            variant="contained" 
+            size="small"
+            fullWidth={isMobile}
+            startIcon={<UsersIcon className="h-5 w-5" />}
+            onClick={() => navigate('/users')}
+          >
+            Manage Users
+          </Button>
+          <Button 
+            variant="contained"
+            size="small"
+            fullWidth={isMobile}
+            startIcon={<ChartBarIcon className="h-5 w-5" />}
+            onClick={() => navigate('/audit-logs')}
+          >
+            Audit Logs
+          </Button>
+          <Button 
+            variant="contained"
+            size="small"
+            fullWidth={isMobile}
+            startIcon={<DownloadIcon className="h-5 w-5" />}
+            onClick={() => navigate('/')}
+          >
+            Download Cashflow Reports
+          </Button>
+        </Stack>
+      </Box>
       
-      <Paper sx={{ p: 3, mb: 4 }}>
+      <Paper sx={{ p: isMobile ? 2 : 3, mb: 4 }}>
         <Typography variant="h6" sx={{ mb: 3 }}>
           Key Performance Indicators
         </Typography>
-        <Grid container spacing={3}>
+        <Grid container spacing={isMobile ? 2 : 3}>
           {kpiData.map((kpi, index) => (
             <Grid item xs={12} sm={6} md={3} key={index}>
               <KPICard {...kpi} />
@@ -50,7 +101,7 @@ const AdminDashboard = () => {
         </Grid>
       </Paper>
 
-      <Paper sx={{ p: 3 }}>
+      <Paper sx={{ p: isMobile ? 2 : 3 }}>
         <RecentActivity activities={recentActivities} />
       </Paper>
     </Box>
