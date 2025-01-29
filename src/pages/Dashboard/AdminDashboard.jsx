@@ -64,8 +64,18 @@ const AdminDashboard = () => {
             fullWidth={isMobile}
             startIcon={<UsersIcon className="h-5 w-5" />}
             onClick={() => navigate('/users')}
+            sx={{
+              backgroundColor: '#3B82F6', // bg-blue-500
+              '&:hover': {
+                backgroundColor: '#2563EB', // bg-blue-600
+              },
+              textTransform: 'none',
+              padding: '0.625rem 1rem', // py-2.5 px-4
+              boxShadow: '0 1px 2px 0 rgb(0 0 0 / 0.05)', // shadow-sm
+              borderRadius: '0.5rem', // rounded-lg
+            }}
           >
-            Manage Users
+            {isMobile ? 'Users' : 'Manage Users'}
           </Button>
           <Button 
             variant="contained"
@@ -73,8 +83,18 @@ const AdminDashboard = () => {
             fullWidth={isMobile}
             startIcon={<ChartBarIcon className="h-5 w-5" />}
             onClick={() => navigate('/audit-logs')}
+            sx={{
+              backgroundColor: '#3B82F6',
+              '&:hover': {
+                backgroundColor: '#2563EB',
+              },
+              textTransform: 'none',
+              padding: '0.625rem 1rem',
+              boxShadow: '0 1px 2px 0 rgb(0 0 0 / 0.05)',
+              borderRadius: '0.5rem',
+            }}
           >
-            Audit Logs
+            {isMobile ? 'Logs' : 'Audit Logs'}
           </Button>
           <Button 
             variant="contained"
@@ -82,8 +102,18 @@ const AdminDashboard = () => {
             fullWidth={isMobile}
             startIcon={<DownloadIcon className="h-5 w-5" />}
             onClick={() => navigate('/')}
+            sx={{
+              backgroundColor: '#3B82F6',
+              '&:hover': {
+                backgroundColor: '#2563EB',
+              },
+              textTransform: 'none',
+              padding: '0.625rem 1rem',
+              boxShadow: '0 1px 2px 0 rgb(0 0 0 / 0.05)',
+              borderRadius: '0.5rem',
+            }}
           >
-            Download Cashflow Reports
+            {isMobile ? 'Reports' : 'Download Cashflow Reports'}
           </Button>
         </Stack>
       </Box>
