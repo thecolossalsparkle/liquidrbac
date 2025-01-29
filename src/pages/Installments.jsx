@@ -3,6 +3,7 @@ import InstallmentsHeader from '../components/installments/InstallmentsHeader';
 import InstallmentsTable from '../components/installments/InstallmentsTable';
 import InstallmentsFilters from '../components/installments/InstallmentsFilters';
 import TablePagination from '../components/common/TablePagination';
+import InstallmentCard from '../components/installments/InstallmentCard';
 
 const Installments = () => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -79,7 +80,21 @@ const Installments = () => {
           selectedFilter={selectedFilter}
           setSelectedFilter={setSelectedFilter}
         />
-        <InstallmentsTable installments={currentEntries} />
+        
+        {/* Desktop View - Table */}
+        <div className="hidden md:block">
+          <InstallmentsTable installments={currentEntries} />
+        </div>
+
+        {/* Mobile View - Cards */}
+        <div className="md:hidden px-4 py-3">
+          {currentEntries.map((installment) => (
+            <InstallmentCard 
+              key={installment.id} 
+              installment={installment} 
+            />
+          ))}
+        </div>
         
         <TablePagination
           totalEntries={filteredInstallments.length}
