@@ -45,12 +45,12 @@ const Home = () => {
         </div>
 
         {/* WhatsApp Chat Button */}
-        <div className="fixed bottom-6 right-1/2 transform translate-x-1/2 sm:right-8 sm:translate-x-0 z-50">
+        <div className="fixed bottom-6 right-6 sm:right-8 z-50">
           <button 
-            className="bg-green-500 text-white px-6 py-3 rounded-full flex items-center space-x-2 hover:bg-green-600 transition-colors shadow-lg whitespace-nowrap"
+            className="bg-green-500 text-white p-3 sm:px-6 sm:py-3 rounded-full flex items-center space-x-2 hover:bg-green-600 transition-colors shadow-lg"
           >
-            <FaWhatsapp className="w-5 h-5 sm:w-6 sm:h-6" />
-            <span>Start Chatting</span>
+            <FaWhatsapp className="w-6 h-6" />
+            <span className="hidden sm:inline">Start Chatting</span>
           </button>
         </div>
       </div>
