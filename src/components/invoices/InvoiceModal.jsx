@@ -1,6 +1,5 @@
 import React from 'react';
 import Button from '../common/Button';
-import StatusBadge from './StatusBadge';
 
 const InvoiceModal = ({ isOpen, onClose, invoice, mode = 'view' }) => {
   if (!isOpen || !invoice) return null;
