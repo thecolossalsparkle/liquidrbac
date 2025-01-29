@@ -126,8 +126,8 @@ const Installments = () => {
       </div>
       
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        {/* Calendar Section */}
-        <div className="lg:col-span-5">
+        {/* Calendar Section - Changed from lg:col-span-5 to lg:col-span-4 */}
+        <div className="lg:col-span-4">
           <Card className="h-full">
             <Calendar
               selectedDate={selectedDate}
@@ -157,8 +157,8 @@ const Installments = () => {
           </Card>
         </div>
 
-        {/* Table Section */}
-        <div className="lg:col-span-7">
+        {/* Table Section - Changed from lg:col-span-7 to lg:col-span-8 */}
+        <div className="lg:col-span-8">
           <Card className="h-full overflow-hidden">
             <InstallmentTable installments={currentEntries} />
             
