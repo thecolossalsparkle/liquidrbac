@@ -8,7 +8,7 @@ import CreateInvoiceModal from '../components/invoices/CreateInvoiceModal';
 import BulkUploadModal from '../components/invoices/BulkUploadModal';
 import TablePagination from '../components/common/TablePagination';
 import { 
-  PlusIcon, CheckCircleIcon, CalendarIcon, ChevronDownIcon, EyeIcon, PencilIcon, ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/outline';
+  PlusIcon, CheckCircleIcon, CalendarIcon, ChevronDownIcon, EyeIcon, PencilIcon, } from '@heroicons/react/outline';
 
 const Invoices = () => {
   const [selectedInvoice, setSelectedInvoice] = useState(null);
@@ -192,7 +192,6 @@ const Invoices = () => {
     return filtered;
   }, [searchQuery, invoices, selectedStatus, selectedTimeRange, customDateRange]);
 
-  const totalPages = entriesPerPage === 'all' ? 1 : Math.ceil(filteredInvoices.length / entriesPerPage);
   const paginatedInvoices = entriesPerPage === 'all' 
     ? filteredInvoices 
     : filteredInvoices.slice((currentPage - 1) * entriesPerPage, currentPage * entriesPerPage);
@@ -221,7 +220,7 @@ const Invoices = () => {
         </div>
         <div className="flex flex-wrap gap-3 w-full sm:w-auto">
           <Button 
-            variant="secondary" 
+            variant="primary"
             className="flex items-center gap-2 flex-1 sm:flex-initial justify-center"
             onClick={() => setShowCreateModal(true)}
           >
@@ -229,7 +228,7 @@ const Invoices = () => {
             Create Invoice
           </Button>
           <Button 
-            variant="secondary"
+            variant="primary"
             onClick={() => setShowBulkUploadModal(true)}
             className="flex-1 sm:flex-initial justify-center"
           >
