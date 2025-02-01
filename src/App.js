@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import PageLayout from './components/layout/PageLayout';
+import Dashboard from './pages/Dashboard/Dashboard';
 import AdminDashboard from './pages/Dashboard/AdminDashboard';
 import ManagerDashboard from './pages/Dashboard/ManagerDashboard';
 import AccountantDashboard from './pages/Dashboard/AccountantDashboard';
@@ -28,7 +29,7 @@ function App() {
             <Route path="operator" element={<OperatorDashboard />} />
             <Route path="auditor" element={<AuditorDashboard />} />
             {/* Default to admin dashboard if no specific role is selected */}
-            <Route index element={<AdminDashboard />} />
+            <Route index element={<Dashboard />} />
           </Route>
           <Route path="/users" element={<Users />} />
           <Route path="/invoices" element={<Invoices />} />
