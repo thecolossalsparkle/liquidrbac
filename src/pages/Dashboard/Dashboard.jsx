@@ -1,5 +1,5 @@
-import React from 'react';
-import { Box, Typography, Container, Grid } from '@mui/material';
+import React, { useState, useEffect } from 'react';
+import { Box, Typography, Container, Grid, Skeleton, Alert, IconButton, Tooltip } from '@mui/material';
 import FinancialSnapshot from '../../components/KPIs/FinancialSnapshot';
 import VendorPaymentsChart from '../../components/Charts/VendorPaymentsChart';
 import ExpenseBreakdownChart from '../../components/Charts/ExpenseBreakdownChart';
@@ -9,16 +9,100 @@ import PaymentTimelineChart from '../../components/Charts/PaymentTimelineChart';
 import TopVendorsTable from '../../components/Tables/TopVendorsTable';
 import VendorComparisonChart from '../../components/Charts/VendorComparisonChart';
 import BudgetAnalysisChart from '../../components/Charts/BudgetAnalysisChart';
+import RefreshIcon from '@mui/icons-material/Refresh';
+import InfoIcon from '@mui/icons-material/Info';
+import { format } from 'date-fns';
 
 const Dashboard = () => {
-  // Mock data - replace with actual data from your API
-  const financialData = {
-    totalPayments: '₹1,50,000',
-    outstandingPayables: '₹45,000',
-    taxLiability: '₹25,000',
-    upcomingPayments: '₹30,000',
-    latePayments: '5',
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [dashboardData, setDashboardData] = useState(null);
+  const [lastUpdated, setLastUpdated] = useState(new Date());
+
+  // Move fetchDashboardData outside useEffect
+  const fetchDashboardData = async () => {
+    try {
+      setLoading(true);
+      // Simulate API delay
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      // Mock data setup
+      const data = {
+        financialData: {
+          totalPayments: '₹1,50,000',
+          outstandingPayables: '₹45,000',
+          taxLiability: '₹25,000',
+          upcomingPayments: '₹30,000',
+          latePayments: '5',
+        },
+        // ... rest of your mock data ...
+      };
+      
+      setDashboardData(data);
+      setError(null);
+    } catch (err) {
+      setError('Failed to load dashboard data. Please try again later.');
+    } finally {
+      setLoading(false);
+    }
   };
+
+  useEffect(() => {
+    fetchDashboardData();
+  }, []);
+
+  const handleRefresh = () => {
+    fetchDashboardData();
+    setLastUpdated(new Date());
+  };
+
+  const SectionHeader = ({ title, tooltip }) => (
+    <Box sx={{ 
+      display: 'flex', 
+      alignItems: 'center', 
+      gap: 1,
+      mb: 2,
+      borderBottom: '1px solid',
+      borderColor: 'divider',
+      pb: 1
+    }}>
+      <Typography variant="h6" component="h2">
+        {title}
+      </Typography>
+      {tooltip && (
+        <Tooltip title={tooltip}>
+          <InfoIcon fontSize="small" color="action" />
+        </Tooltip>
+      )}
+    </Box>
+  );
+
+  if (loading) {
+    return (
+      <Container maxWidth="lg">
+        <Box sx={{ py: 4 }}>
+          <Skeleton variant="text" width={200} height={40} sx={{ mb: 4 }} />
+          <Grid container spacing={3}>
+            {[...Array(4)].map((_, index) => (
+              <Grid item xs={12} md={6} lg={3} key={index}>
+                <Skeleton variant="rectangular" height={120} />
+              </Grid>
+            ))}
+          </Grid>
+        </Box>
+      </Container>
+    );
+  }
+
+  if (error) {
+    return (
+      <Container maxWidth="lg">
+        <Box sx={{ py: 4 }}>
+          <Alert severity="error" sx={{ mb: 4 }}>{error}</Alert>
+        </Box>
+      </Container>
+    );
+  }
 
   // Mock data for vendor payments chart
   const vendorPaymentsData = [
@@ -169,36 +253,66 @@ const Dashboard = () => {
   return (
     <Container maxWidth="lg">
       <Box sx={{ py: 4 }}>
-        <Typography variant="h4" component="h1" gutterBottom>
-          Dashboard
-        </Typography>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 4 }}>
+          <Typography variant="h4" component="h1">
+            Dashboard
+          </Typography>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+            <Typography variant="body2" color="text.secondary">
+              Last updated: {format(lastUpdated, 'dd MMM yyyy HH:mm')}
+            </Typography>
+            <Tooltip title="Refresh dashboard">
+              <IconButton onClick={handleRefresh} size="small">
+                <RefreshIcon />
+              </IconButton>
+            </Tooltip>
+          </Box>
+        </Box>
         
         <Box sx={{ mb: 4 }}>
-          <Typography variant="h6" gutterBottom>
-            Financial Snapshot
-          </Typography>
-          <FinancialSnapshot data={financialData} />
+          <SectionHeader 
+            title="Financial Snapshot" 
+            tooltip="Key financial metrics for the current period"
+          />
+          <FinancialSnapshot data={dashboardData?.financialData} />
         </Box>
 
-        <Box sx={{ mb: 2 }}>
-          <Typography variant="h6" gutterBottom>
-            Analytics
-          </Typography>
+        <Box>
+          <SectionHeader 
+            title="Analytics" 
+            tooltip="Detailed breakdown of vendor payments and expenses"
+          />
+          <Grid container spacing={{ xs: 2, md: 3 }}>
+            <Grid item xs={12} md={6}>
+              <Box sx={{ 
+                bgcolor: 'background.paper',
+                p: 2,
+                borderRadius: 1,
+                boxShadow: 1,
+                height: '100%'
+              }}>
+                <VendorPaymentsChart data={vendorPaymentsData} />
+              </Box>
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <Box sx={{ 
+                bgcolor: 'background.paper',
+                p: 2,
+                borderRadius: 1,
+                boxShadow: 1,
+                height: '100%'
+              }}>
+                <ExpenseBreakdownChart data={expenseBreakdownData} />
+              </Box>
+            </Grid>
+          </Grid>
         </Box>
-        
-        <Grid container spacing={3}>
-          <Grid item xs={12} md={6}>
-            <VendorPaymentsChart data={vendorPaymentsData} />
-          </Grid>
-          <Grid item xs={12} md={6}>
-            <ExpenseBreakdownChart data={expenseBreakdownData} />
-          </Grid>
-        </Grid>
 
         <Box sx={{ mt: 4, mb: 2 }}>
-          <Typography variant="h6" gutterBottom>
-            Payment Schedule (Timeline View)
-          </Typography>
+          <SectionHeader 
+            title="Payment Schedule (Timeline View)" 
+            tooltip="Visual representation of upcoming and overdue payments"
+          />
         </Box>
         
         <Box sx={{ width: '100%', mb: 4 }}>
@@ -206,24 +320,42 @@ const Dashboard = () => {
         </Box>
 
         <Box sx={{ mb: 2 }}>
-          <Typography variant="h6" gutterBottom>
-            Accounts Payable Management
-          </Typography>
+          <SectionHeader 
+            title="Accounts Payable Management" 
+            tooltip="Overview of accounts payable aging"
+          />
         </Box>
         
         <Grid container spacing={3}>
           <Grid item xs={12} md={6}>
-            <PayableAgingChart data={payableAgingData} />
+            <Box sx={{ 
+              bgcolor: 'background.paper',
+              p: 2,
+              borderRadius: 1,
+              boxShadow: 1,
+              height: '100%'
+            }}>
+              <PayableAgingChart data={payableAgingData} />
+            </Box>
           </Grid>
           <Grid item xs={12} md={6}>
-            <VendorPaymentDistributionChart data={vendorPaymentDistributionData} />
+            <Box sx={{ 
+              bgcolor: 'background.paper',
+              p: 2,
+              borderRadius: 1,
+              boxShadow: 1,
+              height: '100%'
+            }}>
+              <VendorPaymentDistributionChart data={vendorPaymentDistributionData} />
+            </Box>
           </Grid>
         </Grid>
 
         <Box sx={{ mt: 4, mb: 2 }}>
-          <Typography variant="h6" gutterBottom>
-            Vendor & Payment Insights
-          </Typography>
+          <SectionHeader 
+            title="Vendor & Payment Insights" 
+            tooltip="Detailed analysis of top vendors and payment insights"
+          />
         </Box>
 
         <Grid container spacing={3}>
@@ -231,10 +363,26 @@ const Dashboard = () => {
             <TopVendorsTable data={topVendorsData} />
           </Grid>
           <Grid item xs={12} md={6}>
-            <VendorComparisonChart data={vendorComparisonData} />
+            <Box sx={{ 
+              bgcolor: 'background.paper',
+              p: 2,
+              borderRadius: 1,
+              boxShadow: 1,
+              height: '100%'
+            }}>
+              <VendorComparisonChart data={vendorComparisonData} />
+            </Box>
           </Grid>
           <Grid item xs={12} md={6}>
-            <BudgetAnalysisChart data={budgetAnalysisData} />
+            <Box sx={{ 
+              bgcolor: 'background.paper',
+              p: 2,
+              borderRadius: 1,
+              boxShadow: 1,
+              height: '100%'
+            }}>
+              <BudgetAnalysisChart data={budgetAnalysisData} />
+            </Box>
           </Grid>
         </Grid>
       </Box>
