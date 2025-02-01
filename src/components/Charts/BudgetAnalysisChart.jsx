@@ -4,11 +4,30 @@ import { ResponsiveBar } from '@nivo/bar';
 
 const BudgetAnalysisChart = ({ data }) => {
   return (
-    <Paper elevation={3} sx={{ p: 3, height: '100%' }}>
-      <Typography variant="h6" gutterBottom>
-        Spending vs. Budget Analysis
-      </Typography>
-      <Box sx={{ height: 350 }}>
+    <Paper 
+      elevation={0}
+      sx={{ 
+        p: 3,
+        height: '100%',
+        borderRadius: 4,
+        background: 'linear-gradient(145deg, #ffffff 0%, #f8faff 100%)',
+        border: '1px solid rgba(230, 235, 255, 0.9)',
+      }}
+    >
+      <Box sx={{ width: '100%', height: 350 }}>
+        <Box sx={{ mb: 3, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <Typography 
+            variant="h6" 
+            sx={{ 
+              fontWeight: 400,
+              fontSize: '1.25rem',
+              color: 'text.primary',
+              letterSpacing: '-0.5px'
+            }}
+          >
+            Spending vs. Budget Analysis
+          </Typography>
+        </Box>
         <ResponsiveBar
           data={data}
           keys={['actual', 'budget']}
@@ -17,7 +36,7 @@ const BudgetAnalysisChart = ({ data }) => {
           margin={{ top: 20, right: 110, bottom: 50, left: 60 }}
           padding={0.3}
           valueScale={{ type: 'linear' }}
-          colors={['#2196f3', '#4caf50']} // Blue for actual, Green for budget
+          colors={['#3B82F6', '#34D399']} // Updated colors to match modern palette
           axisTop={null}
           axisRight={null}
           axisBottom={{
