@@ -17,7 +17,7 @@ const VendorPaymentDistributionChart = ({ data }) => {
           </Typography>
           {payload.map((item, index) => (
             <Typography key={index} variant="body2" sx={{ color: item.color }}>
-              {`${item.name}: $${item.value.toLocaleString()}`}
+              {`${item.name}: ₹${item.value.toLocaleString()}`}
             </Typography>
           ))}
         </Box>
@@ -44,7 +44,7 @@ const VendorPaymentDistributionChart = ({ data }) => {
             />
             <YAxis
               label={{ 
-                value: 'Payment Amount ($)', 
+                value: 'Payment Amount (₹)', 
                 angle: -90, 
                 position: 'insideLeft',
                 offset: -10

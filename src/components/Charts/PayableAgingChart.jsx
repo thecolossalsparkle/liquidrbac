@@ -20,7 +20,7 @@ const PayableAgingChart = ({ data }) => {
       return (
         <Box sx={{ bgcolor: 'background.paper', p: 1, border: '1px solid #ccc' }}>
           <Typography variant="body2">
-            {`${payload[0].name}: $${payload[0].value.toLocaleString()}`}
+            {`${payload[0].name}: ₹${payload[0].value.toLocaleString()}`}
           </Typography>
         </Box>
       );
@@ -41,7 +41,7 @@ const PayableAgingChart = ({ data }) => {
               cx="50%"
               cy="50%"
               labelLine={true}
-              label={({ name, value }) => `$${value.toLocaleString()}`}
+              label={({ name, value }) => `₹${value.toLocaleString()}`}
               outerRadius={100}
               dataKey="value"
             >

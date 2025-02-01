@@ -24,7 +24,7 @@ const VendorPaymentsChart = ({ data }) => {
                 offset: -10
               }}
             />
-            <Tooltip formatter={(value) => `$${value.toLocaleString()}`} />
+            <Tooltip formatter={(value) => `₹${value.toLocaleString()}`} />
             <Legend verticalAlign="top" height={36} />
             <Bar dataKey="amount" name="Payment Amount" fill="#2196f3" />
           </BarChart>
