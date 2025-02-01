@@ -4,15 +4,15 @@ import { Box, Typography, Paper } from '@mui/material';
 
 const VendorPaymentsChart = ({ data }) => {
   return (
-    <Paper elevation={3} sx={{ p: 3, height: '100%' }}>
-      <Box sx={{ width: '100%', height: 450 }}>
-        <Typography variant="h6" gutterBottom>
+    <Paper elevation={3} sx={{ p: 2, height: '100%' }}>
+      <Box sx={{ width: '100%', height: 400 }}>
+        <Typography variant="h6" gutterBottom sx={{ mb: 1 }}>
           Vendor Payments
         </Typography>
         <ResponsiveContainer width="100%" height="95%">
           <BarChart 
             data={data} 
-            margin={{ top: 20, right: 30, left: 50, bottom: 80 }}
+            margin={{ top: 15, right: 30, left: 50, bottom: 70 }}
           >
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis 
@@ -21,17 +21,18 @@ const VendorPaymentsChart = ({ data }) => {
                 value: 'Vendor Names', 
                 position: 'bottom',
                 offset: 0,
-                dy: 30,
+                dy: 25,
                 dx: -40,
+                fontSize: 12
               }}
               tick={{ 
                 angle: -45, 
                 textAnchor: 'end',
-                fontSize: 12,
-                dy: 10,
+                fontSize: 11,
+                dy: 8,
                 dx: 0,
               }}
-              height={80}
+              height={70}
               interval={0}
             />
             <YAxis
@@ -40,12 +41,13 @@ const VendorPaymentsChart = ({ data }) => {
                 angle: -90, 
                 position: 'insideLeft',
                 offset: -5,
-                dy: 50,dx: -15,
-                fontSize: 14
+                dy: 45,
+                dx: -12,
+                fontSize: 12
               }}
               tickFormatter={(value) => `₹${value.toLocaleString()}`}
-              fontSize={12}
-              width={70}
+              fontSize={11}
+              width={65}
               tickMargin={3}
             />
             <Tooltip 
@@ -62,7 +64,7 @@ const VendorPaymentsChart = ({ data }) => {
               dataKey="amount" 
               name="Payment Amount" 
               fill="#2196f3"
-              maxBarSize={60}
+              maxBarSize={50}
             />
           </BarChart>
         </ResponsiveContainer>
