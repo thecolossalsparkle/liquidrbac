@@ -64,10 +64,10 @@ const VendorPaymentsChart = ({ data }) => {
           <BarChart
             data={data}
             margin={{
-              top: 20,
-              right: 30,
-              left: 80,
-              bottom: 40,
+              top: 10,
+              right: 40,
+              left: 40,
+              bottom: 60,
             }}
           >
             <CartesianGrid 
@@ -81,9 +81,25 @@ const VendorPaymentsChart = ({ data }) => {
               tickLine={false}
               tick={{ 
                 fill: '#64748B',
-                fontSize: 12,
+                fontSize: 11,
               }}
               dy={8}
+              angle={-35}
+              textAnchor="end"
+              interval={0}
+              height={80}
+              label={{ 
+                value: 'Vendor Name', 
+                position: 'outside',
+                dy: 50,
+                offset: 50,
+                style: {
+                  textAnchor: 'middle',
+                  fill: '#475569',
+                  fontSize: 13,
+                  fontWeight: 200,
+                }
+              }}
             />
             <YAxis
               axisLine={false}
@@ -93,16 +109,19 @@ const VendorPaymentsChart = ({ data }) => {
                 fontSize: 12,
               }}
               tickFormatter={(value) => `₹${value/1000}K`}
-              dx={-10}
+              dx={-2}
               label={{ 
                 value: 'Amount (₹)', 
                 angle: -90, 
-                position: 'insideLeft',
+                position: 'outside',
+                dx: -40,
+                
+                offset: -45,
                 style: {
                   textAnchor: 'middle',
                   fill: '#475569',
                   fontSize: 13,
-                  fontWeight: 500,
+                  fontWeight: 200,
                 }
               }}
             />
