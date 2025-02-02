@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Typography, Container, Grid, Skeleton, Alert, IconButton, Tooltip } from '@mui/material';
+import { Box, Typography, Container, Grid, Skeleton, Alert, IconButton, Tooltip, Tabs, Tab } from '@mui/material';
 import FinancialSnapshot from '../../components/KPIs/FinancialSnapshot';
 import VendorPaymentsChart from '../../components/Charts/VendorPaymentsChart';
 import ExpenseBreakdownChart from '../../components/Charts/ExpenseBreakdownChart';
@@ -12,12 +12,16 @@ import BudgetAnalysisChart from '../../components/Charts/BudgetAnalysisChart';
 import RefreshIcon from '@mui/icons-material/Refresh';
 import InfoIcon from '@mui/icons-material/Info';
 import { format } from 'date-fns';
+import ExpenditureAnalysis from './ExpenditureAnalysis';
+import VendorAnalysis from './VendorAnalysis';
+import PredictiveAnalysis from './PredictiveAnalysis';
 
 const Dashboard = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [dashboardData, setDashboardData] = useState(null);
   const [lastUpdated, setLastUpdated] = useState(new Date());
+  const [currentTab, setCurrentTab] = useState(0);
 
   // Move fetchDashboardData outside useEffect
   const fetchDashboardData = async () => {
@@ -50,6 +54,10 @@ const Dashboard = () => {
   useEffect(() => {
     fetchDashboardData();
   }, []);
+
+  const handleTabChange = (event, newValue) => {
+    setCurrentTab(newValue);
+  };
 
   const handleRefresh = () => {
     fetchDashboardData();
@@ -268,123 +276,40 @@ const Dashboard = () => {
             </Tooltip>
           </Box>
         </Box>
+
+        <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 3 }}>
+          <Tabs value={currentTab} onChange={handleTabChange}>
+            <Tab label="Expenditure Analysis" />
+            <Tab label="Vendor Analysis" />
+            <Tab label="Predictive Analysis" />
+          </Tabs>
+        </Box>
+
+        {currentTab === 0 && (
+          <ExpenditureAnalysis 
+            kpiData={dashboardData?.financialData}
+            vendorPaymentsData={vendorPaymentsData}
+            expenseBreakdownData={expenseBreakdownData}
+            timelineData={timelineData}
+          />
+        )}
         
-        <Box sx={{ mb: 4 }}>
-          <SectionHeader 
-            title="Financial Snapshot" 
-            tooltip="Key financial metrics for the current period"
+        {currentTab === 1 && (
+          <VendorAnalysis 
+            kpiData={dashboardData?.financialData}
+            payableAgingData={payableAgingData}
+            topVendorsData={topVendorsData}
+            distributionData={vendorPaymentDistributionData}
+            comparisonData={vendorComparisonData}
           />
-          <FinancialSnapshot data={dashboardData?.financialData} />
-        </Box>
-
-        <Box>
-          <SectionHeader 
-            title="Analytics" 
-            tooltip="Detailed breakdown of vendor payments and expenses"
-          />
-          <Grid container spacing={{ xs: 2, md: 3 }}>
-            <Grid item xs={12} md={6}>
-              <Box sx={{ 
-                bgcolor: 'background.paper',
-                p: 2,
-                borderRadius: 1,
-                boxShadow: 1,
-                height: '100%'
-              }}>
-                <VendorPaymentsChart data={vendorPaymentsData} />
-              </Box>
-            </Grid>
-            <Grid item xs={12} md={6}>
-              <Box sx={{ 
-                bgcolor: 'background.paper',
-                p: 2,
-                borderRadius: 1,
-                boxShadow: 1,
-                height: '100%'
-              }}>
-                <ExpenseBreakdownChart data={expenseBreakdownData} />
-              </Box>
-            </Grid>
-          </Grid>
-        </Box>
-
-        <Box sx={{ mt: 4, mb: 2 }}>
-          <SectionHeader 
-            title="Payment Schedule (Timeline View)" 
-            tooltip="Visual representation of upcoming and overdue payments"
-          />
-        </Box>
+        )}
         
-        <Box sx={{ width: '100%', mb: 4 }}>
-          <PaymentTimelineChart data={timelineData} />
-        </Box>
-
-        <Box sx={{ mb: 2 }}>
-          <SectionHeader 
-            title="Accounts Payable Management" 
-            tooltip="Overview of accounts payable aging"
+        {currentTab === 2 && (
+          <PredictiveAnalysis 
+            kpiData={dashboardData?.financialData}
+            budgetData={budgetAnalysisData}
           />
-        </Box>
-        
-        <Grid container spacing={3}>
-          <Grid item xs={12} md={6}>
-            <Box sx={{ 
-              bgcolor: 'background.paper',
-              p: 2,
-              borderRadius: 1,
-              boxShadow: 1,
-              height: '100%'
-            }}>
-              <PayableAgingChart data={payableAgingData} />
-            </Box>
-          </Grid>
-          <Grid item xs={12} md={6}>
-            <Box sx={{ 
-              bgcolor: 'background.paper',
-              p: 2,
-              borderRadius: 1,
-              boxShadow: 1,
-              height: '100%'
-            }}>
-              <VendorPaymentDistributionChart data={vendorPaymentDistributionData} />
-            </Box>
-          </Grid>
-        </Grid>
-
-        <Box sx={{ mt: 4, mb: 2 }}>
-          <SectionHeader 
-            title="Vendor & Payment Insights" 
-            tooltip="Detailed analysis of top vendors and payment insights"
-          />
-        </Box>
-
-        <Grid container spacing={3}>
-          <Grid item xs={12}>
-            <TopVendorsTable data={topVendorsData} />
-          </Grid>
-          <Grid item xs={12} md={6}>
-            <Box sx={{ 
-              bgcolor: 'background.paper',
-              p: 2,
-              borderRadius: 1,
-              boxShadow: 1,
-              height: '100%'
-            }}>
-              <VendorComparisonChart data={vendorComparisonData} />
-            </Box>
-          </Grid>
-          <Grid item xs={12} md={6}>
-            <Box sx={{ 
-              bgcolor: 'background.paper',
-              p: 2,
-              borderRadius: 1,
-              boxShadow: 1,
-              height: '100%'
-            }}>
-              <BudgetAnalysisChart data={budgetAnalysisData} />
-            </Box>
-          </Grid>
-        </Grid>
+        )}
       </Box>
     </Container>
   );
