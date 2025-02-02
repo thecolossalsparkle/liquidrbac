@@ -214,25 +214,56 @@ const Dashboard = () => {
   // Add mock data for vendor comparison
   const vendorComparisonData = [
     {
-      id: "Acme Corp",
-      data: [
-        { x: 'Jan', y: 350000 },
-        { x: 'Feb', y: 400000 },
-        { x: 'Mar', y: 450000 },
-        { x: 'Apr', y: 380000 },
-        { x: 'May', y: 420000 }
-      ]
+      vendor: 'Vendor 1',
+      date: '2024-01-01',
+      amount: 250000
     },
     {
-      id: "Tech Solutions",
-      data: [
-        { x: 'Jan', y: 250000 },
-        { x: 'Feb', y: 300000 },
-        { x: 'Mar', y: 280000 },
-        { x: 'Apr', y: 320000 },
-        { x: 'May', y: 340000 }
-      ]
-    }
+      vendor: 'Vendor 1',
+      date: '2024-02-01',
+      amount: 320000
+    },
+    {
+      vendor: 'Vendor 1',
+      date: '2024-03-01',
+      amount: 280000
+    },
+    {
+      vendor: 'Vendor 1',
+      date: '2024-04-01',
+      amount: 350000
+    },
+    {
+      vendor: 'Vendor 1',
+      date: '2024-05-01',
+      amount: 300000
+    },
+    {
+      vendor: 'Vendor 2',
+      date: '2024-01-01',
+      amount: 200000
+    },
+    {
+      vendor: 'Vendor 2',
+      date: '2024-02-01',
+      amount: 280000
+    },
+    {
+      vendor: 'Vendor 2',
+      date: '2024-03-01',
+      amount: 240000
+    },
+    {
+      vendor: 'Vendor 2',
+      date: '2024-04-01',
+      amount: 320000
+    },
+    {
+      vendor: 'Vendor 2',
+      date: '2024-05-01',
+      amount: 260000
+    },
+    // Add more vendors and data points as needed
   ];
 
   // Add mock data for budget analysis

@@ -1,8 +1,36 @@
-import React from 'react';
-import { Box, Typography, Paper } from '@mui/material';
+import React, { useState } from 'react';
+import { Box, Typography, Paper, FormControl, Select, MenuItem } from '@mui/material';
 import { ResponsiveLine } from '@nivo/line';
 
 const VendorComparisonChart = ({ data }) => {
+  const [vendor1, setVendor1] = useState('Vendor 1');
+  const [vendor2, setVendor2] = useState('Vendor 2');
+  const [timeRange, setTimeRange] = useState('Monthly Spending');
+
+  // Get unique vendors from data
+  const vendors = [...new Set(data.map(item => item.vendor))];
+
+  const chartData = [
+    {
+      id: vendor1,
+      data: data
+        .filter(d => d.vendor === vendor1)
+        .map(d => ({
+          x: d.date,
+          y: d.amount
+        }))
+    },
+    {
+      id: vendor2,
+      data: data
+        .filter(d => d.vendor === vendor2)
+        .map(d => ({
+          x: d.date,
+          y: d.amount
+        }))
+    }
+  ];
+
   return (
     <Paper 
       elevation={0}
@@ -14,8 +42,15 @@ const VendorComparisonChart = ({ data }) => {
         border: '1px solid rgba(230, 235, 255, 0.9)',
       }}
     >
-      <Box sx={{ width: '100%', height: 350 }}>
-        <Box sx={{ mb: 3, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+      <Box sx={{ width: '100%', height: 500 }}>
+        <Box sx={{ 
+          mb: 3, 
+          display: 'flex', 
+          justifyContent: 'space-between', 
+          alignItems: 'center',
+          flexWrap: 'wrap',
+          gap: 2
+        }}>
           <Typography 
             variant="h6" 
             sx={{ 
@@ -25,69 +60,150 @@ const VendorComparisonChart = ({ data }) => {
               letterSpacing: '-0.5px'
             }}
           >
-            Vendor Payment Comparison
+            Vendor Comparison
           </Typography>
+          <Box sx={{ display: 'flex', gap: 2 }}>
+            <FormControl size="small" sx={{ minWidth: 150 }}>
+              <Select
+                value={vendor1}
+                onChange={(e) => setVendor1(e.target.value)}
+                sx={{ bgcolor: 'white' }}
+              >
+                {vendors.map(vendor => (
+                  <MenuItem key={vendor} value={vendor}>{vendor}</MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+            <FormControl size="small" sx={{ minWidth: 150 }}>
+              <Select
+                value={vendor2}
+                onChange={(e) => setVendor2(e.target.value)}
+                sx={{ bgcolor: 'white' }}
+              >
+                {vendors.map(vendor => (
+                  <MenuItem key={vendor} value={vendor}>{vendor}</MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+            <FormControl size="small" sx={{ minWidth: 150 }}>
+              <Select
+                value={timeRange}
+                onChange={(e) => setTimeRange(e.target.value)}
+                sx={{ bgcolor: 'white' }}
+              >
+                <MenuItem value="Monthly Spending">Monthly Spending</MenuItem>
+                <MenuItem value="Quarterly Spending">Quarterly Spending</MenuItem>
+                <MenuItem value="Yearly Spending">Yearly Spending</MenuItem>
+              </Select>
+            </FormControl>
+          </Box>
         </Box>
         <ResponsiveLine
-          data={data}
-          margin={{ top: 20, right: 110, bottom: 50, left: 60 }}
-          xScale={{ type: 'point' }}
-          yScale={{
+          data={chartData}
+          margin={{ top: 20, right: 20, bottom: 60, left: 80 }}
+          xScale={{ 
+            type: 'time',
+            format: '%Y-%m-%d',
+            useUTC: false,
+            precision: 'day',
+          }}
+          yScale={{ 
             type: 'linear',
             min: 'auto',
             max: 'auto',
-          }}
-          axisTop={null}
-          axisRight={null}
-          axisBottom={{
-            tickSize: 5,
-            tickPadding: 5,
-            tickRotation: 0,
-            legend: 'Month',
-            legendOffset: 36,
-            legendPosition: 'middle'
+            stacked: false,
           }}
           axisLeft={{
             tickSize: 5,
             tickPadding: 5,
             tickRotation: 0,
             legend: 'Amount (₹)',
-            legendOffset: -40,
+            legendOffset: -60,
             legendPosition: 'middle',
             format: value => `₹${(value/1000)}K`
           }}
-          pointSize={10}
-          pointColor={{ theme: 'background' }}
-          pointBorderWidth={2}
-          pointBorderColor={{ from: 'serieColor' }}
-          pointLabelYOffset={-12}
-          useMesh={true}
-          legends={[
+          axisBottom={{
+            format: '%b %d',
+            tickValues: 'every 1 month',
+            legend: 'Time',
+            legendOffset: 40,
+            legendPosition: 'middle'
+          }}
+          enableGridX={false}
+          curve="monotoneX"
+          enableArea={true}
+          areaOpacity={0.15}
+          enablePoints={false}
+          colors={['#4169E1', '#FF69B4']} // Blue and Pink colors
+          defs={[
             {
-              anchor: 'bottom-right',
-              direction: 'column',
-              justify: false,
-              translateX: 100,
-              translateY: 0,
-              itemsSpacing: 0,
-              itemDirection: 'left-to-right',
-              itemWidth: 80,
-              itemHeight: 20,
-              itemOpacity: 0.75,
-              symbolSize: 12,
-              symbolShape: 'circle',
-              symbolBorderColor: 'rgba(0, 0, 0, .5)',
-              effects: [
-                {
-                  on: 'hover',
-                  style: {
-                    itemBackground: 'rgba(0, 0, 0, .03)',
-                    itemOpacity: 1
-                  }
-                }
-              ]
-            }
+              id: 'gradientA',
+              type: 'linearGradient',
+              colors: [
+                { offset: 0, color: '#4169E1', opacity: 0.4 },
+                { offset: 100, color: '#4169E1', opacity: 0 },
+              ],
+            },
+            {
+              id: 'gradientB',
+              type: 'linearGradient',
+              colors: [
+                { offset: 0, color: '#FF69B4', opacity: 0.4 },
+                { offset: 100, color: '#FF69B4', opacity: 0 },
+              ],
+            },
           ]}
+          fill={[
+            { match: { id: vendor1 }, id: 'gradientA' },
+            { match: { id: vendor2 }, id: 'gradientB' },
+          ]}
+          useMesh={true}
+          animate={true}
+          motionConfig="gentle"
+          theme={{
+            axis: {
+              ticks: {
+                text: {
+                  fontSize: 12,
+                  fill: '#64748B',
+                },
+              },
+              legend: {
+                text: {
+                  fontSize: 13,
+                  fill: '#475569',
+                  fontWeight: 500,
+                },
+              },
+            },
+            grid: {
+              line: {
+                stroke: '#E2E8F0',
+                strokeWidth: 1,
+              },
+            },
+          }}
+          tooltip={({ point }) => (
+            <Box
+              sx={{
+                background: 'white',
+                padding: '12px',
+                border: '1px solid #ccc',
+                borderRadius: '4px',
+                boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+              }}
+            >
+              <Typography variant="body2" sx={{ fontWeight: 600, color: point.serieColor }}>
+                {point.serieId}
+              </Typography>
+              <Typography variant="body2">
+                Date: {new Date(point.data.x).toLocaleDateString()}
+              </Typography>
+              <Typography variant="body2">
+                Amount: ₹{point.data.y.toLocaleString()}
+              </Typography>
+            </Box>
+          )}
         />
       </Box>
     </Paper>
