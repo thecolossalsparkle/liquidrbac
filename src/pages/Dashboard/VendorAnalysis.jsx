@@ -1,6 +1,7 @@
 import React from 'react';
 import { Box, Grid } from '@mui/material';
-import DashboardKPIs from '../../components/KPIs/DashboardKPIs';
+import FinancialSnapshot from '../../components/KPIs/FinancialSnapshot';
+import NavigationTabs from '../../components/Navigation/NavigationTabs';
 import PayableAgingChart from '../../components/Charts/PayableAgingChart';
 import TopVendorsTable from '../../components/Tables/TopVendorsTable';
 import VendorPaymentDistributionChart from '../../components/Charts/VendorPaymentDistributionChart';
@@ -17,11 +18,10 @@ const VendorAnalysis = ({
 }) => {
   return (
     <Box>
-      <DashboardKPIs 
-        data={kpiData} 
-        currentTab={currentTab}
-        onTabChange={onTabChange}
-      />
+      <FinancialSnapshot data={kpiData} />
+      <Box sx={{ mt: 3 }}>
+        <NavigationTabs currentTab={currentTab} onTabChange={onTabChange} />
+      </Box>
       
       <Grid container spacing={3}>
         <Grid item xs={12}>
