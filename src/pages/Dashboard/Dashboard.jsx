@@ -266,33 +266,38 @@ const Dashboard = () => {
     // Add more vendors and data points as needed
   ];
 
-  // Add mock data for budget analysis
+  // Update the budget analysis mock data
   const budgetAnalysisData = [
     {
       month: 'Jan',
-      actual: 350000,
-      budget: 400000,
-    },
-    {
-      month: 'Feb',
-      actual: 420000,
-      budget: 400000,
+      actual: 15000,
+      budget: 25000,
     },
     {
       month: 'Mar',
-      actual: 380000,
-      budget: 400000,
-    },
-    {
-      month: 'Apr',
-      actual: 450000,
-      budget: 400000,
+      actual: 35000,
+      budget: 40000,
     },
     {
       month: 'May',
-      actual: 390000,
-      budget: 400000,
+      actual: 55000,
+      budget: 40000,
+    },
+    {
+      month: 'Jul',
+      actual: 20000,
+      budget: 25000,
     }
+  ];
+
+  // Add this to your mock data section
+  const projectedPayablesData = [
+    { date: '2024-01-01', amount: 3000 },
+    { date: '2024-02-01', amount: 4200 },
+    { date: '2024-03-01', amount: 3800 },
+    { date: '2024-04-01', amount: 4500 },
+    { date: '2024-05-01', amount: 4100 },
+    { date: '2024-06-01', amount: 4800 },
   ];
 
   return (
@@ -356,6 +361,7 @@ const Dashboard = () => {
           <PredictiveAnalysis 
             kpiData={dashboardData?.financialData}
             budgetData={budgetAnalysisData}
+            projectedPayablesData={projectedPayablesData}
             currentTab={currentTab}
             onTabChange={handleTabChange}
           />
