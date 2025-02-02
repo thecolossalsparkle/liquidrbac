@@ -63,7 +63,7 @@ const VendorPaymentsChart = ({ data }) => {
               letterSpacing: '-0.5px'
             }}
           >
-            Vendor Payments
+            Cash Outflow Trends
           </Typography>
         </Box>
         <ResponsiveContainer width="100%" height="95%">

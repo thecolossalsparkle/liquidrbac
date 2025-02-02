@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Typography, Container, Grid, Skeleton, Alert, IconButton, Tooltip, Tabs, Tab } from '@mui/material';
+import { Box, Typography, Container, Grid, Skeleton, Alert, IconButton, Tooltip, Tabs, Tab, Button } from '@mui/material';
 import FinancialSnapshot from '../../components/KPIs/FinancialSnapshot';
 import VendorPaymentsChart from '../../components/Charts/VendorPaymentsChart';
 import ExpenseBreakdownChart from '../../components/Charts/ExpenseBreakdownChart';
@@ -11,6 +11,7 @@ import VendorComparisonChart from '../../components/Charts/VendorComparisonChart
 import BudgetAnalysisChart from '../../components/Charts/BudgetAnalysisChart';
 import RefreshIcon from '@mui/icons-material/Refresh';
 import InfoIcon from '@mui/icons-material/Info';
+import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import { format } from 'date-fns';
 import ExpenditureAnalysis from './ExpenditureAnalysis';
 import VendorAnalysis from './VendorAnalysis';
@@ -55,13 +56,18 @@ const Dashboard = () => {
     fetchDashboardData();
   }, []);
 
-  const handleTabChange = (event, newValue) => {
+  const handleTabChange = (newValue) => {
     setCurrentTab(newValue);
   };
 
   const handleRefresh = () => {
     fetchDashboardData();
     setLastUpdated(new Date());
+  };
+
+  const handleExport = () => {
+    // Add your export logic here
+    console.log('Exporting report...');
   };
 
   const SectionHeader = ({ title, tooltip }) => (
@@ -274,15 +280,22 @@ const Dashboard = () => {
                 <RefreshIcon />
               </IconButton>
             </Tooltip>
+            <Button
+              variant="contained"
+              startIcon={<FileDownloadIcon />}
+              onClick={handleExport}
+              size="small"
+              sx={{
+                backgroundColor: '#1976d2',
+                color: 'white',
+                '&:hover': {
+                  backgroundColor: '#1565c0'
+                }
+              }}
+            >
+              Export Report
+            </Button>
           </Box>
-        </Box>
-
-        <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 3 }}>
-          <Tabs value={currentTab} onChange={handleTabChange}>
-            <Tab label="Expenditure Analysis" />
-            <Tab label="Vendor Analysis" />
-            <Tab label="Predictive Analysis" />
-          </Tabs>
         </Box>
 
         {currentTab === 0 && (
@@ -291,6 +304,8 @@ const Dashboard = () => {
             vendorPaymentsData={vendorPaymentsData}
             expenseBreakdownData={expenseBreakdownData}
             timelineData={timelineData}
+            currentTab={currentTab}
+            onTabChange={handleTabChange}
           />
         )}
         
@@ -301,6 +316,8 @@ const Dashboard = () => {
             topVendorsData={topVendorsData}
             distributionData={vendorPaymentDistributionData}
             comparisonData={vendorComparisonData}
+            currentTab={currentTab}
+            onTabChange={handleTabChange}
           />
         )}
         
@@ -308,6 +325,8 @@ const Dashboard = () => {
           <PredictiveAnalysis 
             kpiData={dashboardData?.financialData}
             budgetData={budgetAnalysisData}
+            currentTab={currentTab}
+            onTabChange={handleTabChange}
           />
         )}
       </Box>

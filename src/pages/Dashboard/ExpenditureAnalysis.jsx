@@ -5,10 +5,21 @@ import VendorPaymentsChart from '../../components/Charts/VendorPaymentsChart';
 import ExpenseBreakdownChart from '../../components/Charts/ExpenseBreakdownChart';
 import PaymentTimelineChart from '../../components/Charts/PaymentTimelineChart';
 
-const ExpenditureAnalysis = ({ kpiData, vendorPaymentsData, expenseBreakdownData, timelineData }) => {
+const ExpenditureAnalysis = ({ 
+  kpiData, 
+  vendorPaymentsData, 
+  expenseBreakdownData, 
+  timelineData,
+  currentTab,
+  onTabChange 
+}) => {
   return (
     <Box>
-      <DashboardKPIs data={kpiData} />
+      <DashboardKPIs 
+        data={kpiData} 
+        currentTab={currentTab}
+        onTabChange={onTabChange}
+      />
       
       <Grid container spacing={3}>
         <Grid item xs={12} md={6}>
